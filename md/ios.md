@@ -40,7 +40,7 @@
 <a href="https://apps.apple.com/jp/app/id1515877221" title="点击跳转" target="_blank" rel="noopener">
 <img src="https://custom-icon-badges.demolab.com/badge/iOS-App_Store-blue.svg?logo=appstore">
 </a>
-<a href="https://apps.apple.com/jp/app/id1515877221" title="点击跳转" target="_blank" rel="noopener">
+<a href="https://decrypt.day/app/id1515877221" title="点击跳转" target="_blank" rel="noopener">
 <img src="https://custom-icon-badges.demolab.com/badge/IPA-Decrypt_IPA-blue.svg?logo=decryptday">
 </a>
 </div>
