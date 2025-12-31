@@ -1,0 +1,82 @@
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+.buttons a {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #000000;
+    text-decoration: none;
+    font-size: 1rem;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    min-width: 100px;
+    justify-content: flex-start;
+    position: relative;
+    cursor: pointer;
+}
+
+.buttons a:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+}
+
+.buttons a img {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 12px;
+    transition: filter 0.2s ease;
+}
+
+.buttons a span {
+    display: block;
+    text-align: center;
+    margin-left: 32px;
+    width: 100%;
+}
+
+.buttons a.blur {
+    backdrop-filter: blur(8px);
+}
+
+.buttons a.mono img {
+    filter: brightness(0);
+}
+
+.buttons a.mono:hover img {
+    filter: brightness(0) invert(1);
+}
+
+.buttons a.info {
+    min-width: 110px;
+}
+
+.buttons a.doc {
+    min-width: 120px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .buttons a {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: rgb(255, 255, 255);
+    }
+
+    .buttons a:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+        color: rgb(0, 0, 0);
+    }
+
+    .buttons a.mono img {
+        filter: brightness(0) invert(1);
+    }
+
+    .buttons a.mono:hover img {
+        filter: brightness(0);
+    }
+}

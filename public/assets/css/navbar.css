@@ -1,0 +1,101 @@
+nav {
+    background: rgba(255, 255, 255, 0.5);
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    align-items: center;
+    backdrop-filter: blur(8px);
+}
+
+nav a {
+    color: rgb(0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+nav a.active {
+    color: rgb(27, 127, 243);
+    font-weight: bold;
+}
+
+nav.bottom {
+    display: flex;
+    justify-content: space-around;
+    height: 60px;
+    bottom: 0;
+}
+
+nav.bottom a {
+    font-size: 12px;
+    gap: 4px;
+}
+
+nav.bottom a img {
+    width: 24px;
+    height: 24px;
+}
+
+nav.top {
+    display: none;
+    justify-content: center;
+    height: 50px;
+    top: 0;
+}
+
+nav.top a {
+    font-size: 18px;
+    padding: 0 32px;
+}
+
+nav.top .icons {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    left: 50px;
+}
+
+nav.top .icons a {
+    padding: 2px;
+}
+
+nav.top .icons a img {
+    width: 16px;
+    height: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+    nav {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    nav a {
+        color: rgb(255, 255, 255);
+    }
+
+    nav a.active {
+        color: rgb(35, 209, 247);
+    }
+}
+
+@media (min-width: 768px) {
+    nav.top {
+        display: flex;
+    }
+
+    nav.bottom {
+        display: none;
+    }
+}
+
+@media (display-mode: standalone) {
+    nav.bottom {
+        bottom: 20px;
+        height: 60px;
+        width: 90vw;
+        border-radius: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}

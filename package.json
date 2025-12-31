@@ -1,0 +1,19 @@
+{
+	"name": "bluearchive-cafe",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "node src/build.js",
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.8.19",
+		"marked": "^17.0.1",
+		"vitest": "~3.2.0",
+		"wrangler": "^4.54.0"
+	}
+}

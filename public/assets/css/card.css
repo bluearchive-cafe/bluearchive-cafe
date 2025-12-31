@@ -1,0 +1,114 @@
+.cards {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin: 0 auto;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: 33px;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    max-width: 600px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #000;
+    margin: 0 auto;
+}
+
+.card span.label {
+    font-size: 0.8em;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+
+.card span.value {
+    font-weight: bold;
+}
+
+.table.status {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 16px;
+    height: 100%;
+    align-items: stretch;
+}
+
+.column {
+    display: grid;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+    align-content: start;
+}
+
+.column.left {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-items: center;
+}
+
+.column.left img {
+    width: 32px;
+    height: 32px;
+}
+
+.column.right {
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.column.right span.value {
+    overflow-wrap: anywhere;
+}
+
+.table.about {
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    gap: 16px;
+    width: 100%;
+    align-items: center;
+    justify-items: center;
+    margin: 0 auto;
+}
+
+.table.about .icon {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+}
+
+.table.about .name {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.table.about .desc {
+    max-width: 100%;
+    display: block;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+    }
+}
+
+@media (min-width: 768px) {
+    .column {
+        gap: 24px 0;
+    }
+
+    .cards {
+        gap: 30px;
+        grid-template-columns: 1fr 1fr;
+    }
+}

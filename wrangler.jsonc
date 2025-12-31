@@ -1,0 +1,41 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "bluearchive-cafe",
+	"main": "src/index.js",
+	"compatibility_date": "2025-12-25",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
+	"assets": {
+		"directory": "./public"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"kv_namespaces": [
+		{
+			"binding": "STATUS",
+			"id": "8ae8975ae1dc472eac0fc89b0a03c8c7"
+		},
+		{
+			"binding": "SERVERINFO",
+			"id": "9d35490828544a4394113ffda0b0e390"
+		},
+		{
+			"binding": "NOTICEINDEX",
+			"id": "5011cc6edebc4aa69618fd744690e22e"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "DOWNLOAD",
+			"bucket_name": "bluearchive-cafe-download"
+		}
+	],
+	"triggers": {
+		"crons": [
+			"*/5 * * * *"
+		]
+	}
+}
