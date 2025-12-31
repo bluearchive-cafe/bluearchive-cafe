@@ -188,8 +188,8 @@ export default {
         console.log(`资源包版本号更新成功：${version}`)
       } else console.log(`资源包版本号检查成功：${version}`)
     } catch (err) { console.error(`资源包版本号检查失败：${err}`); }
+    /*
     try {
-      return; // 跳过公告资源信息检查
       const key = "prod/index.json";
       const upstream = await fetch("https://prod-noticeindex.bluearchiveyostar.com/" + key);
       if (!upstream.ok) throw new Error("拉取失败");
@@ -220,6 +220,7 @@ export default {
         console.log(`公告资源信息更新成功：${time}`);
       } else console.log(`公告资源信息检查成功：${time}`)
     } catch (err) { console.error(`公告资源信息检查失败：${err}`); }
+    */
     try {
       const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" })
       await env.STATUS.put("LastCheck", time);
