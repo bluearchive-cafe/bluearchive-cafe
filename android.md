@@ -7,13 +7,26 @@
 
 ## 一、安装
 
-> 本站提供汉化版 Android 游戏客户端，内置登录加速功能，点击下载并安装
+> 本站提供汉化版 Android 游戏客户端，内置登录加速功能，可以按需下载安装
+
+- 日配版
+  
+  - 大厅、战斗：**`日配`**
+  - 故事、剧情：除部分场景外 **`无配音`**
+  
+- 中配版
+
+  - 大厅、战斗：**`日配`**
+  - 故事、剧情：同步已更新国服 **`中配`**
 
 
 
 <div class="badges" align="center">
 <a href="https://bluearchive.cafe/download/蔚蓝档案.apk" title="点击下载" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Android-汉化版客户端-green.svg?logo=android">
+<img src="https://custom-icon-badges.demolab.com/badge/Android-日配版客户端-green.svg?logo=android">
+</a>
+<a href="https://bluearchive.cafe/download/蔚蓝档案中配版.apk" title="点击下载" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Android-中配版客户端-green.svg?logo=android">
 </a>
 </div>
 

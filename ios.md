@@ -66,8 +66,29 @@
 
 - 资源汉化模块
 
-  实现游戏资源汉化，包括文本及公告汉化
+  实现游戏资源汉化，包括文本图像语音等
+
+  - 日配版
   
+    - 大厅、战斗：**`日配`**
+    - 故事、剧情：除部分场景外 **`无配音`**
+  
+  - 中配版
+
+    - 大厅、战斗：**`日配`**
+    - 故事、剧情：同步已更新国服 **`中配`**
+
+
+
+<div class="badges" align="center">
+<a href="https://bluearchive.cafe/install/shadowrocket/localize" title="点击安装" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-日配汉化模块-blue.svg?logo=shadowrocket">
+</a>
+<a href="https://bluearchive.cafe/install/shadowrocket/localize-cn-voice" title="点击安装" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-中配汉化模块-blue.svg?logo=shadowrocket">
+</a>
+</div>
+
 - 登录加速模块（可选）
 
   绕过登录地区限制，如有网络条件可跳过
@@ -75,9 +96,6 @@
 
 
 <div class="badges" align="center">
-<a href="https://bluearchive.cafe/install/shadowrocket/localize" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-资源汉化模块-blue.svg?logo=shadowrocket">
-</a>
 <a href="https://bluearchive.cafe/install/shadowrocket/login" title="点击安装" target="_blank" rel="noopener">
 <img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-登录加速模块-blue.svg?logo=shadowrocket">
 </a>
@@ -119,20 +137,38 @@
 
 - 资源汉化覆写
 
-  用于实现游戏资源汉化，包括文本及公告汉化
-  
-- 登录加速覆写（可选）
+  实现游戏资源汉化，包括文本图像语音等
 
-  用于绕过登录地区限制，如有网络条件可跳过
+  - 日配版
+  
+    - 大厅、战斗：**`日配`**
+    - 故事、剧情：除部分场景外 **`无配音`**
+  
+  - 中配版
+
+    - 大厅、战斗：**`日配`**
+    - 故事、剧情：同步已更新国服 **`中配`**
 
 
 
 <div class="badges" align="center">
 <a href="https://bluearchive.cafe/install/stash/localize" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Stash-资源汉化模块-blue.svg?logo=stash">
+<img src="https://custom-icon-badges.demolab.com/badge/Stash-日配汉化覆写-blue.svg?logo=stash">
 </a>
+<a href="https://bluearchive.cafe/install/stash/localize-cn-voice" title="点击安装" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Stash-中配汉化覆写-blue.svg?logo=stash">
+</a>
+</div>
+  
+- 登录加速覆写（可选）
+
+  绕过登录地区限制，如有网络条件可跳过
+
+
+
+<div class="badges" align="center">
 <a href="https://bluearchive.cafe/install/stash/login" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Stash-登录加速模块-blue.svg?logo=stash">
+<img src="https://custom-icon-badges.demolab.com/badge/Stash-登录加速覆写-blue.svg?logo=stash">
 </a>
 </div>
 

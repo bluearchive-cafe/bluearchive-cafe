@@ -97,10 +97,14 @@ export default {
 
         if (client === "shadowrocket" && action === "localize") {
           target = "shadowrocket://install?module=https://bluearchive.cafe/config/shadowrocket/bluearchive-cafe-localize.sgmodule";
+        } else if (client === "shadowrocket" && action === "localize-cn-voice") {
+          target = "shadowrocket://install?module=https://bluearchive.cafe/config/shadowrocket/bluearchive-cafe-localize-cn-voice.sgmodule";
         } else if (client === "shadowrocket" && action === "login") {
           target = "shadowrocket://install?module=https://bluearchive.cafe/config/shadowrocket/bluearchive-cafe-login.sgmodule";
         } else if (client === "stash" && action === "localize") {
           target = "stash://install-override?url=https://bluearchive.cafe/config/stash/bluearchive-cafe-localize.stoverride";
+        } else if (client === "stash" && action === "localize-cn-voice") {
+          target = "stash://install-override?url=https://bluearchive.cafe/config/stash/bluearchive-cafe-localize-cn-voice.stoverride";
         } else if (client === "stash" && action === "login") {
           target = "stash://install-override?url=https://bluearchive.cafe/config/stash/bluearchive-cafe-login.stoverride";
         }
