@@ -33,6 +33,9 @@
 			"bucket_name": "bluearchive-cafe-download"
 		}
 	],
+	"ai": {
+		"binding": "AI"
+	},
 	"triggers": {
 		"crons": [
 			"*/5 * * * *"

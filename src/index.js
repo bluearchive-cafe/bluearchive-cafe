@@ -169,67 +169,80 @@ export default {
       let version;
       const overrideGroup = serverinfo.ConnectionGroups[0].OverrideConnectionGroups.find(obj => obj.Name !== "1.0");
       if (overrideGroup) version = overrideGroup.AddressablesCatalogUrlRoot.split("/").pop();
-      for (const connectionGroup of serverinfo.ConnectionGroups || []) {
-        if (connectionGroup.ManagementDataUrl) {
-          connectionGroup.ManagementDataUrl = connectionGroup.ManagementDataUrl.replace(
-            "prod-noticeindex.bluearchiveyostar.com",
-            "prod-noticeindex.bluearchive.cafe"
-          );
-        }
-        for (const overrideGroup of connectionGroup.OverrideConnectionGroups || []) {
-          if (overrideGroup.Name !== "1.0" && overrideGroup.AddressablesCatalogUrlRoot) {
-            overrideGroup.AddressablesCatalogUrlRoot = overrideGroup.AddressablesCatalogUrlRoot.replace(
-              "prod-clientpatch.bluearchiveyostar.com",
-              "prod-clientpatch.bluearchive.cafe"
+      if (version !== JSON.parse(await env.STATUS.get("Localization.Official") || '{"version":"","time":""}').version) {
+        for (const connectionGroup of serverinfo.ConnectionGroups || []) {
+          if (connectionGroup.ManagementDataUrl) {
+            connectionGroup.ManagementDataUrl = connectionGroup.ManagementDataUrl.replace(
+              "prod-noticeindex.bluearchiveyostar.com",
+              "prod-noticeindex.bluearchive.cafe"
             );
           }
+          for (const overrideGroup of connectionGroup.OverrideConnectionGroups || []) {
+            if (overrideGroup.Name !== "1.0" && overrideGroup.AddressablesCatalogUrlRoot) {
+              overrideGroup.AddressablesCatalogUrlRoot = overrideGroup.AddressablesCatalogUrlRoot.replace(
+                "prod-clientpatch.bluearchiveyostar.com",
+                "prod-clientpatch.bluearchive.cafe"
+              );
+            }
+          }
         }
-      }
-      const value = JSON.stringify(serverinfo, null, 2);
-      const status = JSON.parse(await env.STATUS.get("Localization.Official") || '{"version":"","time":""}');
-      const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
-      if (version !== status.version) {
+        const value = JSON.stringify(serverinfo, null, 2);
+        const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
         await env.STATUS.put("Localization.Official", JSON.stringify({ version, time }));
         await env.SERVERINFO.put(key, value);
         console.log(`资源包版本号更新成功：${version}`)
       } else console.log(`资源包版本号检查成功：${version}`)
     } catch (err) { console.error(`资源包版本号检查失败：${err}`); }
     try {
+      const { h32 } = await xxhash();
       const INDEX_KEY = "prod/index.json";
       const HASH_KEY = "prod/index.hash";
       const upstream = await fetch("https://prod-noticeindex.bluearchiveyostar.com/" + INDEX_KEY);
       if (!upstream.ok) throw new Error("拉取失败");
 
       const text = await upstream.text();
-
-      const { h32 } = await xxhash();
       const hash = h32(text).toString();;
+      const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
 
-      let noticeindex;
-      try { noticeindex = JSON.parse(text); } catch { throw new Error("解析失败"); }
-
-      const stack = [noticeindex];
-      while (stack.length) {
-        const obj = stack.pop();
-        if (obj && typeof obj === "object") {
-          for (const key in obj) {
-            const value = obj[key];
-            if (key === "Url" && typeof value === "string" && value.endsWith(".html")) {
-              obj[key] = value.replace(
-                "prod-notice.bluearchiveyostar.com",
-                "prod-notice.bluearchive.cafe"
-              );
-            } else if (value && typeof value === "object") { stack.push(value); }
+      if (hash !== await env.NOTICEINDEX.get(HASH_KEY)) {
+        let noticeindex;
+        try { noticeindex = JSON.parse(text); } catch { throw new Error("解析失败"); }
+        const stack = [noticeindex];
+        while (stack.length) {
+          const obj = stack.pop();
+          if (obj && typeof obj === "object") {
+            for (const key in obj) {
+              const value = obj[key];
+              if (["Text", "Title", "PopupOKText", "Message"].includes(key) && typeof value === "string" && value) {
+                try {
+                  const result = await env.AI.run(
+                    "@cf/meta/m2m100-1.2b",
+                    {
+                      source_lang: "ja",
+                      target_lang: "zh",
+                      text: value
+                    }
+                  );
+                  obj[key] = result.translated_text;
+                } catch { console.error(`公告资源信息汉化错误：${value}`); }
+              }
+              if (key === "Url" && typeof value === "string" && value.endsWith(".html")) {
+                obj[key] = value.replace(
+                  "prod-notice.bluearchiveyostar.com",
+                  "prod-notice.bluearchive.cafe"
+                );
+              } else if (value && typeof value === "object") stack.push(value);
+            }
           }
         }
-      }
-      const value = JSON.stringify(noticeindex, null, 2);
-      const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
-      if (hash !== await env.NOTICEINDEX.get(HASH_KEY)) {
+        const value = JSON.stringify(noticeindex, null, 2);
         await env.NOTICEINDEX.put(INDEX_KEY, value);
         await env.NOTICEINDEX.put(HASH_KEY, hash);
         console.log(`公告资源信息更新成功：${time}`);
-      } else console.log(`公告资源信息检查成功：${time}`)
+      } else {
+        const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
+        console.log(`公告资源信息检查成功：${time}`);
+      }
     } catch (err) { console.error(`公告资源信息检查失败：${err}`); }
     try {
       const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" })
