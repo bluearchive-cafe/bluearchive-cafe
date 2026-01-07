@@ -200,37 +200,28 @@ export default {
       const upstream = await fetch("https://prod-noticeindex.bluearchiveyostar.com/" + INDEX_KEY);
       if (!upstream.ok) throw new Error("拉取失败");
 
-      const text = await upstream.text();
+      let text = await upstream.text();
       const hash = h32(text).toString();;
       const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
 
       if (hash !== await env.NOTICEINDEX.get(HASH_KEY)) {
         let noticeindex;
-        try { noticeindex = JSON.parse(text); } catch { throw new Error("解析失败"); }
+        try {
+          const response = await env.AI.run('@cf/openai/gpt-oss-120b', {
+            instructions: '将日语翻译为中文，语言亲切自然，按照原格式输出JSON，不带任何样式，尽量选用以下的词：蔚蓝档案、PickUp、总力战、大决战、活动、日程',
+            input: text,
+          });
+          text = response.output[1].content[0].text;
+        } catch (e) {
+          console.error(`公告资源信息汉化错误：${e}`);
+        }
+        try { noticeindex = JSON.parse(text); } catch { console.error(text); throw new Error("解析失败"); }
         const stack = [noticeindex];
-        const translateKeys = ["Text", "Title", "PopupOKText", "Message"];
-        const translateTasks = [];
         while (stack.length) {
           const obj = stack.pop();
           if (obj && typeof obj === "object") {
             for (const key in obj) {
               const value = obj[key];
-              if (translateKeys.includes(key) && typeof value === "string" && value) {
-                translateTasks.push(
-                  (async () => {
-                    try {
-                      const messages = [
-                        { role: "system", content: env.PROMPT || "你是一个蔚蓝档案日服的翻译助手，专门将日语公告信息翻译为中文，包括总力战、大决战、公告、维护、活动等，翻译要贴切自然，保留换行等特殊字符" },
-                        { role: "user", content: value }
-                      ];
-                      const result = await env.AI.run("@cf/openai/gpt-oss-20b", { messages });
-                      obj[key] = result.choices?.[0]?.message?.content || value;
-                    } catch {
-                      console.error(`公告资源信息汉化错误：${value}`);
-                    }
-                  })()
-                );
-              }
               if (key === "Url" && typeof value === "string" && value.endsWith(".html")) {
                 obj[key] = value.replace(
                   "prod-notice.bluearchiveyostar.com",
@@ -240,7 +231,6 @@ export default {
             }
           }
         }
-        await Promise.all(translateTasks);
         const value = JSON.stringify(noticeindex, null, 2);
         await env.NOTICEINDEX.put(INDEX_KEY, value);
         await env.NOTICEINDEX.put(HASH_KEY, hash);
