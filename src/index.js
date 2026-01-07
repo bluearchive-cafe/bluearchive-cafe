@@ -208,23 +208,28 @@ export default {
         let noticeindex;
         try { noticeindex = JSON.parse(text); } catch { throw new Error("解析失败"); }
         const stack = [noticeindex];
+        const translateKeys = ["Text", "Title", "PopupOKText", "Message"];
+        const translateTasks = [];
         while (stack.length) {
           const obj = stack.pop();
           if (obj && typeof obj === "object") {
             for (const key in obj) {
               const value = obj[key];
-              if (["Text", "Title", "PopupOKText", "Message"].includes(key) && typeof value === "string" && value) {
-                try {
-                  const result = await env.AI.run(
-                    "@cf/meta/m2m100-1.2b",
-                    {
-                      source_lang: "ja",
-                      target_lang: "zh",
-                      text: value
+              if (translateKeys.includes(key) && typeof value === "string" && value) {
+                translateTasks.push(
+                  (async () => {
+                    try {
+                      const messages = [
+                        { role: "system", content: env.PROMPT || "你是一个蔚蓝档案日服的翻译助手，专门将日语公告信息翻译为中文，包括总力战、大决战、公告、维护、活动等，翻译要贴切自然，保留换行等特殊字符" },
+                        { role: "user", content: value }
+                      ];
+                      const result = await env.AI.run("@cf/openai/gpt-oss-20b", { messages });
+                      obj[key] = result.choices?.[0]?.message?.content || value;
+                    } catch {
+                      console.error(`公告资源信息汉化错误：${value}`);
                     }
-                  );
-                  obj[key] = result.translated_text;
-                } catch { console.error(`公告资源信息汉化错误：${value}`); }
+                  })()
+                );
               }
               if (key === "Url" && typeof value === "string" && value.endsWith(".html")) {
                 obj[key] = value.replace(
@@ -235,6 +240,7 @@ export default {
             }
           }
         }
+        await Promise.all(translateTasks);
         const value = JSON.stringify(noticeindex, null, 2);
         await env.NOTICEINDEX.put(INDEX_KEY, value);
         await env.NOTICEINDEX.put(HASH_KEY, hash);
