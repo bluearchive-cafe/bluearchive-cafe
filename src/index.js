@@ -1,3 +1,5 @@
+import xxhash from "xxhash-wasm";
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -193,14 +195,20 @@ export default {
       } else console.log(`资源包版本号检查成功：${version}`)
     } catch (err) { console.error(`资源包版本号检查失败：${err}`); }
     try {
-      const key = "prod/index.json";
-      const upstream = await fetch("https://prod-noticeindex.bluearchiveyostar.com/" + key);
+      const INDEX_KEY = "prod/index.json";
+      const HASH_KEY = "prod/index.hash";
+      const upstream = await fetch("https://prod-noticeindex.bluearchiveyostar.com/" + INDEX_KEY);
       if (!upstream.ok) throw new Error("拉取失败");
 
-      let index;
-      try { index = await upstream.json(); } catch { throw new Error("解析失败"); }
+      const text = await upstream.text();
 
-      const stack = [index];
+      const { h32 } = await xxhash();
+      const hash = h32(text).toString();;
+
+      let noticeindex;
+      try { noticeindex = JSON.parse(text); } catch { throw new Error("解析失败"); }
+
+      const stack = [noticeindex];
       while (stack.length) {
         const obj = stack.pop();
         if (obj && typeof obj === "object") {
@@ -215,11 +223,11 @@ export default {
           }
         }
       }
-      const value = JSON.stringify(index, null, 2);
-      const existing = await env.NOTICEINDEX.get(key);
+      const value = JSON.stringify(noticeindex, null, 2);
       const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
-      if (value !== existing) {
-        await env.NOTICEINDEX.put(key, value);
+      if (hash !== await env.NOTICEINDEX.get(HASH_KEY)) {
+        await env.NOTICEINDEX.put(INDEX_KEY, value);
+        await env.NOTICEINDEX.put(HASH_KEY, hash);
         console.log(`公告资源信息更新成功：${time}`);
       } else console.log(`公告资源信息检查成功：${time}`)
     } catch (err) { console.error(`公告资源信息检查失败：${err}`); }
@@ -227,6 +235,6 @@ export default {
       const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" })
       await env.STATUS.put("LastCheck", time);
       console.log(`上次检查时间更新成功：${time}`)
-    } catch (err) {`上次检查时间更新失败：${err}`}
+    } catch (err) { `上次检查时间更新失败：${err}` }
   },
 };

@@ -15,5 +15,8 @@
 		"marked": "^17.0.1",
 		"vitest": "~3.2.0",
 		"wrangler": "^4.54.0"
+	},
+	"dependencies": {
+		"xxhash-wasm": "^1.1.0"
 	}
 }
