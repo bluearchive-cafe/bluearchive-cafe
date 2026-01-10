@@ -1,9 +1,0 @@
-#!name=蔚蓝咖啡厅
-#!desc=蔚蓝档案日服登录加速
-
-[MITM]
-enable = true
-hostname = %APPEND% jp-sdk-api.yostarplat.com
-
-[URL Rewrite]
-jp-sdk-api.yostarplat.com jp-sdk-api.bluearchive.cafe HEADER

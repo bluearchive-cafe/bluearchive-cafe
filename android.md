@@ -7,26 +7,30 @@
 
 ## 一、安装
 
-> 本站提供汉化版 Android 游戏客户端，内置登录加速功能，可以按需下载安装
+> 本站提供汉化版 Android 游戏客户端，可以按需下载安装
 
-- 日配版
+- 汉化版
   
-  - 大厅、战斗：**`日配`**
-  - 故事、剧情：除部分场景外 **`无配音`**
+  - 资源汉化、登录加速：**`支持`**
+  - 包名：**`com.YostarJP.BlueArchive`**
+  - 对模拟器、加速器等兼容性 **`较好`**
+  - 如无特殊需要请下载此版本，**`会覆盖官方原版`**
   
-- 中配版
+- 共存版
 
-  - 大厅、战斗：**`日配`**
-  - 故事、剧情：同步已更新国服 **`中配`**
+  - 资源汉化、登录加速：**`支持`**
+  - 包名：**`com.BCJP.BlueArchive`**
+  - 对模拟器、加速器等兼容性 **`较差`**
+  - 如有特殊需要可下载此版本，**`共存于官方原版`**
 
 
 
 <div class="badges" align="center">
-<a href="https://bluearchive.cafe/download/蔚蓝档案.apk" title="点击下载" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Android-日配版客户端-green.svg?logo=android">
+<a href="https://bluearchive.cafe/download/com.YostarJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Android-汉化版客户端-green.svg?logo=android">
 </a>
-<a href="https://bluearchive.cafe/download/蔚蓝档案中配版.apk" title="点击下载" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Android-中配版客户端-green.svg?logo=android">
+<a href="https://bluearchive.cafe/download/com.BCJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Android-共存版客户端-green.svg?logo=android">
 </a>
 </div>
 

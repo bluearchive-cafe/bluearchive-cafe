@@ -1,13 +1,6 @@
 function fillStatus() {
   if (location.pathname !== '/status') return;
 
-  const map = {
-    "Apk.Official": "/api/apk/official",
-    "Apk.Localized": "/api/apk/localized",
-    "Localization.Official": "/api/localization/official",
-    "Localization.Localized": "/api/localization/localized"
-  };
-
   const statusCache = {
     Apk: { Official: null, Localized: null },
     Localization: { Official: null, Localized: null }
@@ -19,7 +12,7 @@ function fillStatus() {
     const officialKey = `${group}.Official`;
     const localizedKey = `${group}.Localized`;
 
-    const officialFetch = fetch(map[officialKey], { cache: "no-store" })
+    const officialFetch = fetch(`/api/status?type=${group.toLowerCase()}&scope=official`, { cache: "no-store" })
       .then(async res => {
         if (!res.ok) throw new Error("fetch failed");
         const json = await res.json();
@@ -37,7 +30,7 @@ function fillStatus() {
           .forEach(el => el.textContent = "获取失败");
       });
 
-    const localizedFetch = fetch(map[localizedKey], { cache: "no-store" })
+    const localizedFetch = fetch(`/api/status?type=${group.toLowerCase()}&scope=localized`, { cache: "no-store" })
       .then(async res => {
         if (!res.ok) throw new Error("fetch failed");
         const json = await res.json();
@@ -60,7 +53,7 @@ function fillStatus() {
     });
   });
 
-  fetch("/api/lastcheck", { cache: "no-store" })
+  fetch("/api/status?type=last&scope=check&field=time", { cache: "no-store" })
     .then(r => r.text())
     .then(v => {
       document

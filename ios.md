@@ -62,42 +62,13 @@
 
 #### 2. 安装模块
 
-> 本站提供 `资源汉化模块` 和 `登录加速模块` 以供使用，可以按需安装
-
-- 资源汉化模块
-
-  实现游戏资源汉化，包括文本图像语音等
-
-  - 日配版
-  
-    - 大厅、战斗：**`日配`**
-    - 故事、剧情：除部分场景外 **`无配音`**
-  
-  - 中配版
-
-    - 大厅、战斗：**`日配`**
-    - 故事、剧情：同步已更新国服 **`中配`**
+> 本站提供 `Shadowrocket模块` 以便配置，具备资源汉化与登录加速功能，点击一键安装
 
 
 
 <div class="badges" align="center">
-<a href="https://bluearchive.cafe/install/shadowrocket/localize" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-日配汉化模块-blue.svg?logo=shadowrocket">
-</a>
-<a href="https://bluearchive.cafe/install/shadowrocket/localize-cn-voice" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-中配汉化模块-blue.svg?logo=shadowrocket">
-</a>
-</div>
-
-- 登录加速模块（可选）
-
-  绕过登录地区限制，如有网络条件可跳过
-
-
-
-<div class="badges" align="center">
-<a href="https://bluearchive.cafe/install/shadowrocket/login" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-登录加速模块-blue.svg?logo=shadowrocket">
+<a href="https://bluearchive.cafe/api/install?scheme=shadowrocket" title="点击安装" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-安装汉化模块-blue.svg?logo=shadowrocket">
 </a>
 </div>
 
@@ -133,42 +104,13 @@
 
 #### 2. 安装覆写
 
-> 本站提供 `资源汉化覆写` 和 `登录加速覆写` 以供使用，可以按需安装
-
-- 资源汉化覆写
-
-  实现游戏资源汉化，包括文本图像语音等
-
-  - 日配版
-  
-    - 大厅、战斗：**`日配`**
-    - 故事、剧情：除部分场景外 **`无配音`**
-  
-  - 中配版
-
-    - 大厅、战斗：**`日配`**
-    - 故事、剧情：同步已更新国服 **`中配`**
+> 本站提供 `Stash覆写` 以便配置，具备资源汉化与登录加速功能，点击一键安装
 
 
 
 <div class="badges" align="center">
-<a href="https://bluearchive.cafe/install/stash/localize" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Stash-日配汉化覆写-blue.svg?logo=stash">
-</a>
-<a href="https://bluearchive.cafe/install/stash/localize-cn-voice" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Stash-中配汉化覆写-blue.svg?logo=stash">
-</a>
-</div>
-  
-- 登录加速覆写（可选）
-
-  绕过登录地区限制，如有网络条件可跳过
-
-
-
-<div class="badges" align="center">
-<a href="https://bluearchive.cafe/install/stash/login" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Stash-登录加速覆写-blue.svg?logo=stash">
+<a href="https://bluearchive.cafe/api/install?scheme=stash" title="点击安装" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Stash-安装汉化覆写-blue.svg?logo=stash">
 </a>
 </div>
 
@@ -184,7 +126,9 @@
 
 > 其他具备 `MitM` 功能的代理工具，需要自行配置以下两条 `URL重写` 规则：
 
-- 资源汉化
+- 资源汉化重写
+
+  实现游戏资源汉化，包括文本图像语音等
 
 ```
 匹配：yostar-serverinfo.bluearchiveyostar.com
@@ -192,7 +136,9 @@
 方式：透明代理 或 重定向
 ```
 
-- 登录加速（可选）
+- 登录加速重写
+
+  绕过登录地区限制，如有网络条件可跳过
 
 ```
 匹配：jp-sdk-api.yostarplat.com

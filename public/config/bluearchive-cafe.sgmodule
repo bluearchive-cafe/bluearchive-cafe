@@ -1,0 +1,11 @@
+#!name=蔚蓝咖啡厅
+#!desc=蔚蓝档案日服汉化
+
+[MITM]
+enable = true
+hostname = %APPEND% yostar-serverinfo.bluearchiveyostar.com
+hostname = %APPEND% jp-sdk-api.yostarplat.com
+
+[URL Rewrite]
+yostar-serverinfo.bluearchiveyostar.com yostar-serverinfo.bluearchive.cafe HEADER
+jp-sdk-api.yostarplat.com jp-sdk-api.bluearchive.cafe HEADER

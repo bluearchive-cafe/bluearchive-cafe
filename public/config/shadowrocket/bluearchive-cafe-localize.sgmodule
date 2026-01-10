@@ -1,9 +1,0 @@
-#!name=蔚蓝咖啡厅
-#!desc=蔚蓝档案日服资源汉化
-
-[MITM]
-enable = true
-hostname = %APPEND% yostar-serverinfo.bluearchiveyostar.com
-
-[URL Rewrite]
-yostar-serverinfo.bluearchiveyostar.com yostar-serverinfo.bluearchive.cafe HEADER

@@ -1,138 +1,58 @@
 import xxhash from "xxhash-wasm";
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+    const params = url.searchParams;
+    const headers = new Headers({ "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" });
 
-    const spaRoutes = ["/", "/ios", "/android", "/status", "/about", "/support"];
-    if (spaRoutes.includes(path)) {
-      const res = await fetch(new URL("/index.html", url));
-      return new Response(res.body, {
-        ...res,
-        headers: {
-          ...res.headers,
-          "Cache-Control": "public, max-age=3600"
-        }
-      });
-    }
-
-    if (path.startsWith("/api")) {
-      if (path === "/api/lastcheck") {
-        const value = await env.STATUS.get("LastCheck");
-        if (!value) return new Response("获取失败", { status: 404 });
-        return new Response(String(value), {
-          headers: {
-            "Content-Type": "text/plain; charset=utf-8",
-            "Cache-Control": "no-store"
-          }
-        });
-      }
-
-      if (path.endsWith("/")) return new Response("无效路径", { status: 404 });
-      const [, , type, scope, field] = path.split("/");
-
-      const validTypes = ["apk", "localization"];
-      const validScopes = ["official", "localized"];
-      const validFields = ["version", "time"];
-
-      if (!validTypes.includes(type) || !validScopes.includes(scope)) {
-        return new Response("无效路径", { status: 404 });
-      }
-
-      const key =
-        type.charAt(0).toUpperCase() +
-        type.slice(1) +
-        "." +
-        scope.charAt(0).toUpperCase() +
-        scope.slice(1);
-
-      const statusRaw = await env.STATUS.get(key);
-      if (!statusRaw) {
-        return new Response("获取失败", { status: 404 });
-      }
-
-      if (field && validFields.includes(field)) {
-        let status;
-        try {
-          status = JSON.parse(statusRaw);
-        } catch {
-          return new Response("获取失败", { status: 500 });
-        }
-
-        const value = status[field];
-        if (!value) {
-          return new Response("获取失败", { status: 404 });
-        }
-
-        return new Response(String(value), {
-          headers: {
-            "Content-Type": "text/plain; charset=utf-8",
-            "Cache-Control": "no-store"
-          }
-        });
-      }
-
-      return new Response(statusRaw, {
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store"
-        }
-      });
-    }
-
-    if (path.startsWith("/download")) {
-      const file = decodeURIComponent(path.replace("/download/", ""));
+    if (path.startsWith("/download/")) {
+      const file = decodeURIComponent(path.split("/").pop());
       const object = await env.DOWNLOAD.get(file);
-      if (!object) return new Response("Not Found", { status: 404 });
-      return new Response(object.body, {
-        headers: { "Content-Type": "application/octet-stream" }
-      });
+      if (object) return new Response(object.body, { headers: { "Content-Type": "application/octet-stream" } });
+      return new Response("下载文件缺失", { headers, status: 404 })
     }
 
-    if (path.startsWith("/install/")) {
-      const parts = path.split("/").filter(Boolean);
-      if (parts.length === 3) {
-        const [, client, action] = parts;
-
-        let target = null;
-
-        if (client === "shadowrocket" && action === "localize") {
-          target = "shadowrocket://install?module=https://bluearchive.cafe/config/shadowrocket/bluearchive-cafe-localize.sgmodule";
-        } else if (client === "shadowrocket" && action === "localize-cn-voice") {
-          target = "shadowrocket://install?module=https://bluearchive.cafe/config/shadowrocket/bluearchive-cafe-localize-cn-voice.sgmodule";
-        } else if (client === "shadowrocket" && action === "login") {
-          target = "shadowrocket://install?module=https://bluearchive.cafe/config/shadowrocket/bluearchive-cafe-login.sgmodule";
-        } else if (client === "stash" && action === "localize") {
-          target = "stash://install-override?url=https://bluearchive.cafe/config/stash/bluearchive-cafe-localize.stoverride";
-        } else if (client === "stash" && action === "localize-cn-voice") {
-          target = "stash://install-override?url=https://bluearchive.cafe/config/stash/bluearchive-cafe-localize-cn-voice.stoverride";
-        } else if (client === "stash" && action === "login") {
-          target = "stash://install-override?url=https://bluearchive.cafe/config/stash/bluearchive-cafe-login.stoverride";
-        }
-
-        if (target) {
-          return Response.redirect(target, 302);
-        }
+    if (path.startsWith("/api/")) {
+      if (path === "/api/status") {
+        const type = params.get("type");
+        const scope = params.get("scope");
+        const field = params.get("field");
+        if (type === "last" && scope === "check" && field === "time") {
+          const status = await env.STATUS.get("LastCheckTime");
+          return new Response(status || "API：状态信息：查询状态失败", { headers, status: status ? 200 : 404 });
+        } else if (type && scope) {
+          const key = type.charAt(0).toUpperCase() + type.slice(1) + "." + scope.charAt(0).toUpperCase() + scope.slice(1);
+          let status = await env.STATUS.get(key);
+          if (status && field) status = JSON.parse(status)[field];
+          return new Response(status || "API：状态信息：查询状态失败", { headers, status: status ? 200 : 404 });
+        } else return new Response("API：状态信息：查询参数缺失", { headers, status: 400 });
+      } else if (path === "/api/dash") {
+        const uuid = params.get("uuid");
+        const table = params.get("table");
+        const asset = params.get("asset");
+        const voice = params.get("voice");
+        if (uuid && table && asset && voice) {
+          try {
+            await env.PREFERENCE.put(uuid, JSON.stringify({ table: table, asset: asset, voice: voice }));
+            return new Response("API：偏好设置：保存设置成功", { headers });
+          } catch { return new Response("API：偏好设置：保存设置失败", { headers, status: 500 }); }
+        } else if (uuid) {
+          const preference = await env.PREFERENCE.get(uuid);
+          return new Response(preference || "API：偏好设置：查询设置失败", { headers, status: preference ? 200 : 404 });
+        } else return new Response("API：偏好设置：查询参数缺失", { headers, status: 400 });
+      } else if (path === "/api/install") {
+        const scheme = params.get("scheme");
+        const map = {
+          shadowrocket: "shadowrocket://install?module=https://bluearchive.cafe/config/bluearchive-cafe.sgmodule",
+          stash: "stash://install-override?url=https://bluearchive.cafe/config/bluearchive-cafe.stoverride"
+        };
+        if (scheme in map) return Response.redirect(map[scheme], 302);
+        return new Response("API：安装配置：配置参数缺失", { headers, status: 400 });
       }
-
-      return new Response("无效路径", { status: 404 });
+      return new Response("API：调用错误：调用接口未知", { headers, status: 400 })
     }
-
-    if (path.includes(".")) {
-      const res = await fetch(request);
-      if (res.ok) {
-        return new Response(res.body, {
-          ...res,
-          headers: {
-            ...res.headers,
-            "Cache-Control": "public, max-age=3600"
-          }
-        });
-      }
-    }
-
-    return Response.redirect("https://bluearchive.cafe/", 302);
   },
 
   async scheduled(controller, env, ctx) {
@@ -208,13 +128,11 @@ export default {
         let noticeindex;
         try {
           const response = await env.AI.run('@cf/openai/gpt-oss-120b', {
-            instructions: '将日语翻译为中文，语言亲切自然，按照原格式输出JSON，不带任何样式，尽量选用以下的词：蔚蓝档案、PickUp、总力战、大决战、活动、日程',
+            instructions: '将日语翻译为中文，语言亲切自然，保留原有JSON结构，直接返回JSON文本，不要用代码块包裹，尽量选用下列词语：蔚蓝档案、PickUp、总力战、大决战、活动、日程等与游戏《蔚蓝档案》相关的词语',
             input: text,
           });
           text = response.output[1].content[0].text;
-        } catch (e) {
-          console.error(`公告资源信息汉化错误：${e}`);
-        }
+        } catch (e) { console.error(`公告资源信息汉化失败：${e}`); }
         try { noticeindex = JSON.parse(text); } catch { console.error(text); throw new Error("解析失败"); }
         const stack = [noticeindex];
         while (stack.length) {
@@ -242,7 +160,7 @@ export default {
     } catch (err) { console.error(`公告资源信息检查失败：${err}`); }
     try {
       const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" })
-      await env.STATUS.put("LastCheck", time);
+      await env.STATUS.put("LastCheckTime", time);
       console.log(`上次检查时间更新成功：${time}`)
     } catch (err) { `上次检查时间更新失败：${err}` }
   },

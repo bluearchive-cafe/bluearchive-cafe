@@ -1,10 +1,12 @@
 name: 蔚蓝咖啡厅
-desc: 蔚蓝档案日服登录加速
+desc: 蔚蓝档案日服汉化
 category: 蔚蓝档案
 icon: https://bluearchive.cafe/favicon.ico
 
 http:
   mitm:
+    - yostar-serverinfo.bluearchiveyostar.com
     - jp-sdk-api.yostarplat.com
   url-rewrite:
+    - yostar-serverinfo.bluearchiveyostar.com yostar-serverinfo.bluearchive.cafe transparent
     - jp-sdk-api.yostarplat.com jp-sdk-api.bluearchive.cafe transparent
