@@ -5,7 +5,11 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
     const params = url.searchParams;
-    const headers = new Headers({ "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" });
+  const headers = new Headers({
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store",
+    "Access-Control-Allow-Origin": "https://bluearchive.cafe"
+  });
 
     if (path.startsWith("/download/")) {
       const file = decodeURIComponent(path.split("/").pop());
