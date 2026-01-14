@@ -2,9 +2,7 @@ async function fillStatus() {
 	if (location.pathname !== '/status') return;
 
 	const res = await fetch('/api/status');
-	if (!res.ok) throw new Error(`状态获取失败：${res.status}`);
 	const statusData = await res.json();
-
 	const elements = document.querySelectorAll('[data-key]');
 
 	elements.forEach(el => {
@@ -16,7 +14,7 @@ async function fillStatus() {
 			const localized = statusData[type]?.localized?.version;
 
 			if (!official || !localized) {
-				el.textContent = "获取中";
+				el.textContent = "未获取";
 				el.style.color = "rgb(245, 180, 0)";
 			} else if (official === localized) {
 				el.textContent = "已同步";
