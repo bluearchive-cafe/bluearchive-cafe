@@ -101,7 +101,7 @@ export default {
                 await env.SERVERINFO.put(key, value);
                 await env.SERVERINFO.put("info.hash", hash)
                 console.log(`游戏资源信息更新成功：${key}`);
-            }
+            } else console.log(`游戏资源信息检查成功：${key}`);
 
             const version = new URL(serverinfo.ConnectionGroups[0].OverrideConnectionGroups[1].AddressablesCatalogUrlRoot).pathname.slice(1);
             if (version !== await env.RESOURCESTATUS.get("table/official/version")) {
@@ -118,7 +118,7 @@ export default {
                     ])
                 );
                 console.log(`资源包版本号更新成功：${version}`)
-            } else console.log(`资源包版本号检查成功：${key}`)
+            } else console.log(`资源包版本号检查成功：${version}`)
         } catch (err) { console.error(`资源包版本号检查失败：${err}`); }
 
         try {
@@ -173,12 +173,12 @@ export default {
             const types = ["package", "table", "asset", "media", "notice"];
             for (const type of types) {
                 const [version, time] = await Promise.all([
-                    env.RESOURCESTATUS.get(`${type}/official/version`),
-                    env.RESOURCESTATUS.get(`${type}/official/time`),
+                    env.RESOURCESTATUS.get(`${type}/localized/version`),
+                    env.RESOURCESTATUS.get(`${type}/localized/time`),
                 ]);
 
-                patchStatus(status, `${type}/official/version`, version);
-                patchStatus(status, `${type}/official/time`, time);
+                patchStatus(status, `${type}/localized/version`, version);
+                patchStatus(status, `${type}/localized/time`, time);
             }
             patchStatus(status, "time", time);
             await env.RESOURCESTATUS.put("status.json", JSON.stringify(status, null, 2));
