@@ -30,7 +30,7 @@ export default {
                 const field = params.get("field");
                 if (type && scope && field) value = await env.RESOURCESTATUS.get([type, scope, field].join("/"));
                 else value = await env.RESOURCESTATUS.get("status.json");
-                return new Response(value || "API：资源状态：状态查询失败", { headers: { "Content-Type": "application/json" }, status: value ? 200 : 404 });
+                return new Response(value || "API：资源状态：状态查询失败", { headers: { "Content-Type": "application/json; charset=utf-8" }, status: value ? 200 : 404 });
             } else if (path === "/api/dash") {
                 const uuid = params.get("uuid");
                 const table = params.get("table");
@@ -130,6 +130,7 @@ export default {
             let text = await response.text();
             let noticeindex = JSON.parse(text);
             const hash = h32(text).toString();
+            const version = `${noticeindex.LatestClientVersion}_${hash}`;
             if (hash !== await env.NOTICEINDEX.get("prod/index.hash")) {
                 try {
                     const response = await env.AI.run('@cf/openai/gpt-oss-120b', {
@@ -159,12 +160,12 @@ export default {
                 const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
                 await env.NOTICEINDEX.put(key, value);
                 await env.NOTICEINDEX.put("prod/index.hash", hash);
-                await env.RESOURCESTATUS.put("notice/official/version", hash);
+                await env.RESOURCESTATUS.put("notice/official/version", version);
                 await env.RESOURCESTATUS.put("notice/official/time", time);
-                patchStatus(status, "notice/official/version", hash);
+                patchStatus(status, "notice/official/version", version);
                 patchStatus(status, "notice/official/time", time);
-                console.log(`公告资源索引更新成功：${hash}`);
-            } else console.log(`公告资源索引检查成功：${hash}`);
+                console.log(`公告资源索引更新成功：${version}`);
+            } else console.log(`公告资源索引检查成功：${version}`);
         } catch (err) { console.error(`公告资源索引检查失败：${err}`); }
 
         try {
