@@ -1,96 +1,37 @@
-function fillStatus() {
+async function fillStatus() {
 	if (location.pathname !== '/status') return;
 
-	const statusCache = {
-		Apk: { Official: null, Localized: null },
-		Localization: { Official: null, Localized: null }
-	};
+	const res = await fetch('/api/status');
+	if (!res.ok) throw new Error(`状态获取失败：${res.status}`);
+	const statusData = await res.json();
 
-	const groups = Object.keys(statusCache);
+	const elements = document.querySelectorAll('[data-key]');
 
-	groups.forEach(group => {
-		const officialKey = `${group}.Official`;
-		const localizedKey = `${group}.Localized`;
+	elements.forEach(el => {
+		const keyPath = el.dataset.key; // e.g. "package/official/version" 或 "package/status"
 
-		const officialFetch = fetch(`/api/status?type=${group.toLowerCase()}&scope=official`, { cache: "no-store" })
-			.then(async res => {
-				if (!res.ok) throw new Error("fetch failed");
-				const json = await res.json();
-				statusCache[group].Official = json.version || null;
-				["version", "time"].forEach(field => {
-					document
-						.querySelectorAll(`[data-key="${officialKey}.${field}"]`)
-						.forEach(el => el.textContent = json[field] || "获取失败");
-				});
-			})
-			.catch(() => {
-				statusCache[group].Official = null;
-				document
-					.querySelectorAll(`[data-key^="${officialKey}."]`)
-					.forEach(el => el.textContent = "获取失败");
-			});
+		// 特殊处理 status 字段
+		if (keyPath.endsWith('/status')) {
+			// 取出路径前缀，例如 package 或 resource
+			const type = keyPath.split('/')[0];
+			const official = statusData[type]?.official?.version;
+			const localized = statusData[type]?.localized?.version;
 
-		const localizedFetch = fetch(`/api/status?type=${group.toLowerCase()}&scope=localized`, { cache: "no-store" })
-			.then(async res => {
-				if (!res.ok) throw new Error("fetch failed");
-				const json = await res.json();
-				statusCache[group].Localized = json.version || null;
-				["version", "time"].forEach(field => {
-					document
-						.querySelectorAll(`[data-key="${localizedKey}.${field}"]`)
-						.forEach(el => el.textContent = json[field] || "获取失败");
-				});
-			})
-			.catch(() => {
-				statusCache[group].Localized = null;
-				document
-					.querySelectorAll(`[data-key^="${localizedKey}."]`)
-					.forEach(el => el.textContent = "获取失败");
-			});
+			if (!official || !localized) {
+				el.textContent = "获取中";
+				el.style.color = "orange"; // 黄色
+			} else if (official === localized) {
+				el.textContent = "已同步";
+				el.style.color = "green";  // 绿色
+			} else {
+				el.textContent = "未同步";
+				el.style.color = "red";    // 红色
+			}
+			return;
+		}
 
-		Promise.all([officialFetch, localizedFetch]).then(() => {
-			updateStatus(group, statusCache[group]);
-		});
+		// 普通字段直接填充
+		const value = keyPath.split('/').reduce((obj, k) => obj?.[k], statusData);
+		if (value !== undefined) el.textContent = value;
 	});
-
-	fetch("/api/status?type=last&scope=check&field=time", { cache: "no-store" })
-		.then(r => r.text())
-		.then(v => {
-			document
-				.querySelectorAll('[data-key="LastCheck"]')
-				.forEach(el => el.textContent = v);
-		})
-		.catch(() => {
-			document
-				.querySelectorAll('[data-key="LastCheck"]')
-				.forEach(el => el.textContent = "获取失败");
-		});
-}
-
-function updateStatus(group, data) {
-	const el = document.querySelector(`[data-key="${group}.Status"]`);
-	if (!el) return;
-
-	el.style.color = "";
-	el.style.fontWeight = "";
-
-	const { Official, Localized } = data;
-
-	if (!Official || !Localized) {
-		el.textContent = "未获取";
-		el.style.color = "rgb(245, 180, 0)";
-		el.style.fontWeight = "600";
-		return;
-	}
-
-	if (Official === Localized) {
-		el.textContent = "已同步";
-		el.style.color = "rgb(46, 204, 113)";
-		el.style.fontWeight = "600";
-		return;
-	}
-
-	el.textContent = "未同步";
-	el.style.color = "rgb(231, 76, 60)";
-	el.style.fontWeight = "600";
 }

@@ -3,7 +3,7 @@
 <h1>资源同步状态</h1>
 </div>
 
-> 上次检查时间：<span class="value" data-key="LastCheck">正在获取</span>
+> 上次检查时间：<span class="value" data-key="time">正在获取</span>
 
 ## 安装包状态
 
@@ -14,17 +14,17 @@
 <div class="column left">
 <div class="status desc"><span class="value">安装包</span></div>
 <div class="status icon"><img src="../public/assets/icons/android.png"></div>
-<div class="status value"><span class="value" data-key="Apk.Status">获取中</span></div>
+<div class="status value"><span class="value" data-key="package/status">获取中</span></div>
 </div>
 <div class="column right">
 <div class="version official"><span class="label">官方版本</span></div>
-<div class="version official"><span class="value" data-key="Apk.Official.version">正在获取</span></div>
+<div class="version official"><span class="value" data-key="package/official/version">正在获取</span></div>
 <div class="time check"><span class="label">更新时间</span></div>
-<div class="time check"><span class="value" data-key="Apk.Official.time">正在获取</span></div>
+<div class="time check"><span class="value" data-key="package/official/time">正在获取</span></div>
 <div class="version localized"><span class="label">汉化版本</span></div>
-<div class="version localized"><span class="value" data-key="Apk.Localized.version">正在获取</span></div>
+<div class="version localized"><span class="value" data-key="package/localized/version">正在获取</span></div>
 <div class="time update"><span class="label">更新时间</span></div>
-<div class="time update"><span class="value" data-key="Apk.Localized.time">正在获取</span></div>
+<div class="time update"><span class="value" data-key="package/localized/time">正在获取</span></div>
 </div>
 </div>
 </div>
@@ -38,17 +38,17 @@
 <div class="column left">
 <div class="status desc"><span class="value">汉化包</span></div>
 <div class="status icon"><img src="../public/assets/icons/cafe.png"></div>
-<div class="status value"><span class="value" data-key="Localization.Status">获取中</span></div>
+<div class="status value"><span class="value" data-key="resource/status">获取中</span></div>
 </div>
 <div class="column right">
 <div class="version official"><span class="label">官方版本</span></div>
-<div class="version official"><span class="value" data-key="Localization.Official.version">正在获取</span></div>
+<div class="version official"><span class="value" data-key="resource/official/version">正在获取</span></div>
 <div class="time check"><span class="label">更新时间</span></div>
-<div class="time check"><span class="value" data-key="Localization.Official.time">正在获取</span></div>
+<div class="time check"><span class="value" data-key="resource/official/time">正在获取</span></div>
 <div class="version localized"><span class="label">汉化版本</span></div>
-<div class="version localized"><span class="value" data-key="Localization.Localized.version">正在获取</span></div>
+<div class="version localized"><span class="value" data-key="resource/localized/version">正在获取</span></div>
 <div class="time update"><span class="label">更新时间</span></div>
-<div class="time update"><span class="value" data-key="Localization.Localized.time">正在获取</span></div>
+<div class="time update"><span class="value" data-key="resource/localized/time">正在获取</span></div>
 </div>
 </div>
 </div>

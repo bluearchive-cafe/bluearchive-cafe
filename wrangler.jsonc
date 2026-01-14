@@ -10,7 +10,6 @@
 	"assets": {
 		"directory": "./public",
 		"not_found_handling": "single-page-application",
-		"binding": "ASSETS",
 		"run_worker_first": ["/download/*", "/api/*"]
 	},
 	"observability": {
@@ -19,10 +18,10 @@
 	"kv_namespaces": [
 		{
 			"binding": "PREFERENCE",
-			"id": "0e236f84bc404458883d4f0a80cdfd19"
+			"id": "6b8c26e909cc4539a071e747d4fabd8b"
 		},
 		{
-			"binding": "STATUS",
+			"binding": "RESOURCESTATUS",
 			"id": "8ae8975ae1dc472eac0fc89b0a03c8c7"
 		},
 		{
