@@ -53,14 +53,6 @@
     filter: brightness(0) invert(1);
 }
 
-.buttons a.info {
-    min-width: 110px;
-}
-
-.buttons a.doc {
-    min-width: 120px;
-}
-
 @media (prefers-color-scheme: dark) {
     .buttons a {
         background-color: rgba(0, 0, 0, 0.5);

@@ -11,8 +11,6 @@
 
 - `日区` Apple 账号，用于安装日服游戏客户端
 
-  - 或者获取游戏客户端 IPA 并进行自签
-
 - 具备 `MitM` 功能的代理工具，建议选用以下工具之一
 
   - **[`Shadowrocket`](https://apps.apple.com/us/app/shadowrocket/id932747118 "点击跳转")**
@@ -23,25 +21,18 @@
 
 ## 二、安装
 
-> 在 App Store 中使用日区 Apple 账号登录，然后点击跳转至 App Store 安装官方游戏客户端，或者从 Decrypt IPA Store 获取游戏客户端 IPA 并通过自签进行安装
+> 在 App Store 中使用日区 Apple 账号登录，然后点击跳转至 App Store 安装官方游戏客户端
 
 <div class="buttons">
-<a href="https://apps.apple.com/jp/app/id1515877221" class="color doc" title="点击跳转" target="_blank" rel="noopener">
+<a href="https://apps.apple.com/jp/app/id1515877221" class="color" title="点击跳转" target="_blank" rel="noopener">
 <img src="../public/assets/icons/appstore.png">
 <span>App Store</span>
-</a>
-<a href="https://decrypt.day/app/id1515877221" class="color doc" title="点击跳转" target="_blank" rel="noopener">
-<img src="../public/assets/icons/decryptday.png">
-<span>Decrypt IPA</span>
 </a>
 </div>
 
 <div class="badges" align="center">
 <a href="https://apps.apple.com/jp/app/id1515877221" title="点击跳转" target="_blank" rel="noopener">
 <img src="https://custom-icon-badges.demolab.com/badge/iOS-App_Store-blue.svg?logo=appstore">
-</a>
-<a href="https://decrypt.day/app/id1515877221" title="点击跳转" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/IPA-Decrypt_IPA-blue.svg?logo=decryptday">
 </a>
 </div>
 
@@ -74,7 +65,7 @@
 > 本站提供 `Shadowrocket模块` 以便配置，具备资源汉化与登录加速功能，点击一键安装
 
 <div class="buttons">
-<a href="shadowrocket://install?module=https://bluearchive.cafe/config/bluearchive-cafe.sgmodule" class="color doc" title="点击安装" target="_blank" rel="noopener">
+<a href="shadowrocket://install?module=https://bluearchive.cafe/config/bluearchive-cafe.sgmodule" class="color" title="点击安装" target="_blank" rel="noopener">
 <img src="../public/assets/icons/shadowrocket.png">
 <span>安装汉化模块</span>
 </a>
@@ -121,7 +112,7 @@
 > 本站提供 `Stash覆写` 以便配置，具备资源汉化与登录加速功能，点击一键安装
 
 <div class="buttons">
-<a href="stash://install-override?url=https://bluearchive.cafe/config/bluearchive-cafe.stoverride" class="color doc" title="点击安装" target="_blank" rel="noopener">
+<a href="stash://install-override?url=https://bluearchive.cafe/config/bluearchive-cafe.stoverride" class="color" title="点击安装" target="_blank" rel="noopener">
 <img src="../public/assets/icons/stash.png">
 <span>安装汉化覆写</span>
 </a>
@@ -175,17 +166,17 @@
 
 #### Use of unauthorized apps
 
-> `自签时修改IPA`、`使用PlayCover`、`越狱设备` 都有可能导致该问题，请老师尝试 `自签时保留应用扩展`、`用自签代替PlayCover`、`恢复越狱`
+> `自签时修改IPA`、`使用PlayCover`、`越狱设备` 都有可能导致该问题，请老师尝试 `自签时保留应用扩展`、`用自签代替PlayCover`、`还原越狱`
 
 ### **苹果**
-
-#### 汉化后字体粗细不同
-
-> 由于 Apple 系统限制，本站不提供汉化版 iOS 游戏客户端，而字体和部分文本、图片资源保存在安装包中，故 `无法解决` 字体和部分文本、图片的汉化问题
 
 #### 汉化后部分文本缺失
 
 > 打开 `设置`-`通用`-`字体`-`更多字体`，安装 `苹方-简` 字体
+
+#### 汉化后字体粗细不同
+
+> 由于使用官方客户端，字体文件和部分文本打包在应用包中，故 `无法解决` 字体粗细不同和部分文本汉化的问题
 
 ### **资源**
 
@@ -201,8 +192,8 @@
 
 #### 文本缺失 / 异常 / 错误
 
-> 文本变动可能没有及时同步，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=汉化文本问题反馈&body=文本位置：%0A%0A问题描述： "点击编辑")**
+> 文本变动可能没有及时同步，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=文本问题反馈&body=文本位置：%0A%0A问题描述： "点击跳转")**
 
 #### 资源缺失 / 异常 / 错误
 
-> 版本更新可能导致资源异常，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=汉化资源问题反馈&body=资源位置：%0A%0A问题描述： "点击编辑")**
+> 版本更新可能导致资源异常，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=资源问题反馈&body=资源位置：%0A%0A问题描述： "点击跳转")**

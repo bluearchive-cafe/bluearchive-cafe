@@ -36,7 +36,7 @@
 <div class="card">
 <div class="table status">
 <div class="column left">
-<div class="status desc"><span class="value">汉化包</span></div>
+<div class="status desc"><span class="value">文本包</span></div>
 <div class="status icon"><img src="../public/assets/icons/triangle.png"></div>
 <div class="status value"><span class="value" data-key="table/status">获取中</span></div>
 </div>
@@ -103,7 +103,7 @@
 
 ## 公告包状态
 
-> 显示当前公告包版本同步状态，随着不定期更新而变化，未同步会导致公告缺失汉化，可以进入游戏
+> 显示当前公告包版本同步状态，随着不定期更新而变化，未同步会导致公告缺少汉化，可以进入游戏
 
 <div class="card">
 <div class="table status">

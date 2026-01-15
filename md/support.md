@@ -31,11 +31,11 @@ target="_blank" rel="noopener">哔哩哔哩充电计划
 > 本项目完全免费，支持项目遵循自愿原则，不便之处，敬请谅解！
 
 <div class="buttons">
-<a href="https://afdian.com/a/beichen1234" class="color doc" title="点击跳转" target="_blank" rel="noopener">
+<a href="https://afdian.com/a/beichen1234" class="color" title="点击跳转" target="_blank" rel="noopener">
 <img src="../public/assets/icons/afdian.png">
 <span>爱发电</span>
 </a>
-<a href="https://b23.tv/cJiBl53" class="color doc" title="点击跳转" target="_blank" rel="noopener">
+<a href="https://b23.tv/cJiBl53" class="color" title="点击跳转" target="_blank" rel="noopener">
 <img src="../public/assets/icons/charge.png">
 <span>哔哩充电</span>
 </a>

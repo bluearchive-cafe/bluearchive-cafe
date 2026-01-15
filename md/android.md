@@ -7,39 +7,18 @@
 
 ## 一、安装
 
-> 本站提供汉化版 Android 游戏客户端，可以按需下载安装
-
-- 汉化版
-  
-  - 资源汉化、登录加速：**`支持`**
-  - 包名：**`com.YostarJP.BlueArchive`**
-  - 对模拟器、加速器等兼容性 **`较好`**
-  - 如无特殊需要请下载此版本，**`会覆盖官方原版`**
-  
-- 共存版
-
-  - 资源汉化、登录加速：**`支持`**
-  - 包名：**`com.BCJP.BlueArchive`**
-  - 对模拟器、加速器等兼容性 **`较差`**
-  - 如有特殊需要可下载此版本，**`共存于官方原版`**
+> 本站提供汉化版 Android 游戏客户端，点击下载安装
 
 <div class="buttons">
-<a href="https://bluearchive.cafe/download/com.YostarJP.BlueArchive.apk" class="color doc" title="点击下载" target="_blank" rel="noopener">
+<a href="https://bluearchive.cafe/download/com.YostarJP.BlueArchive.apk" class="color" title="点击下载" target="_blank" rel="noopener">
 <img src="../public/assets/icons/android.png">
 <span>汉化版客户端</span>
-</a>
-<a href="https://bluearchive.cafe/download/com.BCJP.BlueArchive.apk" class="color doc" title="点击下载" target="_blank" rel="noopener">
-<img src="../public/assets/icons/android.png">
-<span>共存版客户端</span>
 </a>
 </div>
 
 <div class="badges" align="center">
 <a href="https://bluearchive.cafe/download/com.YostarJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener">
 <img src="https://custom-icon-badges.demolab.com/badge/Android-汉化版客户端-green.svg?logo=android">
-</a>
-<a href="https://bluearchive.cafe/download/com.BCJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Android-共存版客户端-green.svg?logo=android">
 </a>
 </div>
 
@@ -53,17 +32,17 @@
 
 #### Use of unauthorized apps
 
-> `设备上存在非法应用`、`使用模拟器`、`Root设备` 都有可能导致该问题，请老师尝试 `清除非法应用或关闭获取应用列表权限`、`更换模拟器`、`关闭Root权限`
+> `设备上存在非法应用`、`使用模拟器`、`Root设备` 都有可能导致该问题，请老师尝试 `清除非法应用或关闭获取应用列表权限`、`使用汉化版而非共存版客户端或更换模拟器`、`关闭Root权限`
 
 ### **安卓**
 
-#### 加速器提示安装包损坏
+#### 无法覆盖原版客户端安装
 
-> 因安装包修改，部分加速器无法支持加速，请老师尝试 `更换加速器`
+> 因签名不同，需要先卸载原版客户端，再安装汉化版客户端，如需保留原版客户端，请使用 <strong><a href="https://bluearchive.cafe/download/com.BCJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener"><code>共存版客户端</code></a></strong>
 
 #### 需下载最新版本客户端
 
-> 游戏客户端需要更新，请老师在本站 `重新下载` 汉化版 Android 游戏客户端并 `覆盖安装`
+> 游戏客户端需要更新，请老师在本站 `重新下载` 游戏客户端并 `覆盖安装`
 
 ### **资源**
 
@@ -79,8 +58,8 @@
 
 #### 文本缺失 / 异常 / 错误
 
-> 文本变动可能没有及时同步，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=汉化文本问题反馈&body=文本位置：%0A%0A问题描述： "点击编辑")**
+> 文本变动可能没有及时同步，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=文本问题反馈&body=文本位置：%0A%0A问题描述： "点击跳转")**
 
 #### 资源缺失 / 异常 / 错误
 
-> 版本更新可能导致资源异常，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=汉化资源问题反馈&body=资源位置：%0A%0A问题描述： "点击编辑")**
+> 版本更新可能导致资源异常，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=资源问题反馈&body=资源位置：%0A%0A问题描述： "点击跳转")**
