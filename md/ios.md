@@ -9,7 +9,7 @@
 
 > 开始之前，需要准备以下两件工具
 
-- `日区` Apple 账号，用于安装日服游戏客户端
+- `日区` Apple 账号，用于安装原版游戏客户端
 
 - 具备 `MitM` 功能的代理工具，建议选用以下工具之一
 
@@ -44,36 +44,38 @@
 
 #### 1. 安装证书
 
-> 由于 Shadowrocket 用于 HTTPS 解密的 CA 证书与配置文件相关联，会随着配置文件切换，所以切换新配置时需要重新安装证书，或者自行配置 <strong><a href="https://github.com/LOWERTOP/Shadowrocket?tab=readme-ov-file#证书模块" title="点击跳转" target="_blank" rel="noopener"><code>证书模块</code></a></strong>
+> 由于 Shadowrocket 用于 HTTPS 解密的 CA 证书与配置文件相关联，会随着配置文件切换，所以切换新配置时需要重新安装证书，或者自行配置<strong><a href="https://github.com/LOWERTOP/Shadowrocket?tab=readme-ov-file#证书模块" title="点击跳转" target="_blank" rel="noopener">证书模块</a></strong>
 
-- 生成证书
+- **进入配置**
 
   在 `配置` 标签页，点击正在使用的配置文件右边的 `ⓘ` 图标
 
+- **生成证书**
+
   点击 `HTTPS解密`-`证书`-`生成新的CA证书`-`安装证书`-`允许`
 
-- 安装证书
+- **安装证书**
 
   打开 `设置`-`已下载描述文件`-`安装`
 
-- 信任证书
+- **信任证书**
 
   打开 `设置`-`通用`-`关于本机`-`证书信任设置`，信任证书
 
 #### 2. 安装模块
 
-> 本站提供 `Shadowrocket模块` 以便配置，具备资源汉化与登录加速功能，点击一键安装
+> 本站提供 `Shadowrocket模块` 以便配置，具备资源汉化与登录加速功能，点击安装
 
 <div class="buttons">
 <a href="shadowrocket://install?module=https://bluearchive.cafe/config/bluearchive-cafe.sgmodule" class="color" title="点击安装" target="_blank" rel="noopener">
 <img src="../public/assets/icons/shadowrocket.png">
-<span>安装汉化模块</span>
+<span>安装模块</span>
 </a>
 </div>
 
 <div class="badges" align="center">
 <a href="https://bluearchive.cafe/api/install?scheme=shadowrocket" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-安装汉化模块-blue.svg?logo=shadowrocket">
+<img src="https://custom-icon-badges.demolab.com/badge/Shadowrocket-安装模块-blue.svg?logo=shadowrocket">
 </a>
 </div>
 
@@ -91,36 +93,36 @@
 
 > 由于 Stash 用于 HTTPS 解密的 CA 证书会通过 iCloud 同步，如果有多台设备安装了 Stash，请避免在任一设备上点击 `重新生成新的CA证书`，否则可能需要在多台设备上重新安装和信任证书
 
-- 打开 `MitM`
+- **启用 `MitM`**
 
   在 `首页` 标签页，点击 `MitM` 右上角的开关
 
-- 生成证书
+- **生成证书**
 
   点击 `生成新的CA证书`-`安装证书`-`允许`
 
-- 安装证书
+- **安装证书**
 
   打开 `设置`-`已下载描述文件`-`安装`
 
-- 信任证书
+- **信任证书**
 
   打开 `设置`-`通用`-`关于本机`-`证书信任设置`，信任证书
 
 #### 2. 安装覆写
 
-> 本站提供 `Stash覆写` 以便配置，具备资源汉化与登录加速功能，点击一键安装
+> 本站提供 `Stash覆写` 以便配置，具备资源汉化与登录加速功能，点击安装
 
 <div class="buttons">
 <a href="stash://install-override?url=https://bluearchive.cafe/config/bluearchive-cafe.stoverride" class="color" title="点击安装" target="_blank" rel="noopener">
 <img src="../public/assets/icons/stash.png">
-<span>安装汉化覆写</span>
+<span>安装覆写</span>
 </a>
 </div>
 
 <div class="badges" align="center">
 <a href="https://bluearchive.cafe/api/install?scheme=stash" title="点击安装" target="_blank" rel="noopener">
-<img src="https://custom-icon-badges.demolab.com/badge/Stash-安装汉化覆写-blue.svg?logo=stash">
+<img src="https://custom-icon-badges.demolab.com/badge/Stash-安装覆写-blue.svg?logo=stash">
 </a>
 </div>
 
@@ -136,7 +138,7 @@
 
 > 其他具备 `MitM` 功能的代理工具，需要自行配置以下两条 `URL重写` 规则：
 
-- 资源汉化重写
+- **资源汉化重写**
 
   实现游戏资源汉化，包括文本图像语音等
 
@@ -146,7 +148,7 @@
 方式：透明代理 或 重定向
 ```
 
-- 登录加速重写
+- **登录加速重写**
 
   绕过登录地区限制，如有网络条件可跳过
 
@@ -162,7 +164,7 @@
 
 #### 使用汉化会导致封号吗
 
-> 目前没有发生过因使用汉化而导致账号封禁的先例，若担心账号被封请老师自行斟酌是否使用汉化，<strong><a href="https://github.com/bluearchive-cafe/bluearchive-cafe?tab=AGPL-3.0-1-ov-file" title="免责声明" target="_blank" rel="noopener"><code>本站不对因使用或无法使用本项目所产生的损失承担任何责任</code></a></strong>
+> 目前没有发生过因使用汉化而导致账号封禁的先例，若担心账号被封请老师自行斟酌是否使用汉化，<strong><a href="https://github.com/bluearchive-cafe/bluearchive-cafe?tab=AGPL-3.0-1-ov-file" title="免责声明" target="_blank" rel="noopener">本站不对因使用或无法使用本项目所产生的损失承担任何责任</a></strong>
 
 #### Use of unauthorized apps
 
@@ -192,8 +194,8 @@
 
 #### 文本缺失 / 异常 / 错误
 
-> 文本变动可能没有及时同步，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=文本问题反馈&body=文本位置：%0A%0A问题描述： "点击跳转")**
+> 文本变动可能没有及时同步，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[点击编辑邮件](mailto:feedback@bluearchive.cafe?subject=文本问题反馈&body=文本位置：%0A%0A问题描述： "点击跳转")**
 
 #### 资源缺失 / 异常 / 错误
 
-> 版本更新可能导致资源异常，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=资源问题反馈&body=资源位置：%0A%0A问题描述： "点击跳转")**
+> 版本更新可能导致资源异常，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[点击编辑邮件](mailto:feedback@bluearchive.cafe?subject=资源问题反馈&body=资源位置：%0A%0A问题描述： "点击跳转")**

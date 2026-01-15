@@ -7,7 +7,7 @@
 
 ## 一、安装
 
-> 本站提供汉化版 Android 游戏客户端，点击下载安装
+> 本站提供汉化版 Android 游戏客户端，点击下载
 
 <div class="buttons">
 <a href="https://bluearchive.cafe/download/com.YostarJP.BlueArchive.apk" class="color" title="点击下载" target="_blank" rel="noopener">
@@ -28,7 +28,7 @@
 
 #### 使用汉化会导致封号吗
 
-> 目前没有发生过因使用汉化而导致账号封禁的先例，若担心账号被封请老师自行斟酌是否使用汉化，<strong><a href="https://github.com/bluearchive-cafe/bluearchive-cafe?tab=AGPL-3.0-1-ov-file" title="免责声明" target="_blank" rel="noopener"><code>本站不对因使用或无法使用本项目所产生的损失承担任何责任</code></a></strong>
+> 目前没有发生过因使用汉化而导致账号封禁的先例，若担心账号被封请老师自行斟酌是否使用汉化，<strong><a href="https://github.com/bluearchive-cafe/bluearchive-cafe?tab=AGPL-3.0-1-ov-file" title="免责声明" target="_blank" rel="noopener">本站不对因使用或无法使用本项目所产生的损失承担任何责任</a></strong>
 
 #### Use of unauthorized apps
 
@@ -38,7 +38,7 @@
 
 #### 无法覆盖原版客户端安装
 
-> 因签名不同，需要先卸载原版客户端，再安装汉化版客户端，如需保留原版客户端，请使用 <strong><a href="https://bluearchive.cafe/download/com.BCJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener"><code>共存版客户端</code></a></strong>
+> 因签名不同，需要先卸载原版客户端，再安装汉化版客户端，如需保留原版客户端，请使用<strong><a href="https://bluearchive.cafe/download/com.BCJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener">共存版客户端</a></strong>
 
 #### 需下载最新版本客户端
 
@@ -58,8 +58,8 @@
 
 #### 文本缺失 / 异常 / 错误
 
-> 文本变动可能没有及时同步，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=文本问题反馈&body=文本位置：%0A%0A问题描述： "点击跳转")**
+> 文本变动可能没有及时同步，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[点击编辑邮件](mailto:feedback@bluearchive.cafe?subject=文本问题反馈&body=文本位置：%0A%0A问题描述： "点击跳转")**
 
 #### 资源缺失 / 异常 / 错误
 
-> 版本更新可能导致资源异常，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[`点击编辑邮件`](mailto:feedback@bluearchive.cafe?subject=资源问题反馈&body=资源位置：%0A%0A问题描述： "点击跳转")**
+> 版本更新可能导致资源异常，请老师发送邮件至 `feedback@bluearchive.cafe` 进行反馈，**[点击编辑邮件](mailto:feedback@bluearchive.cafe?subject=资源问题反馈&body=资源位置：%0A%0A问题描述： "点击跳转")**
