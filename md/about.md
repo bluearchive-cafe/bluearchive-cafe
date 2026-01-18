@@ -56,7 +56,7 @@
 <img src="../public/assets/icons/qqchannel.png">
 <span>QQ 频道</span>
 </a>
-<a href="https://qm.qq.com/q/1qqXohKhsU" class="color" title="点击跳转" target="_blank" rel="noopener">
+<a href="https://qm.qq.com/q/KNws63nrQ6" class="color" title="点击跳转" target="_blank" rel="noopener">
 <img src="../public/assets/icons/qq.png">
 <span>QQ 群聊</span>
 </a>
