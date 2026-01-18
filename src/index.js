@@ -33,10 +33,19 @@ export default {
                 return new Response(value || "API：资源状态：状态查询失败", { headers: { "Content-Type": "application/json; charset=utf-8" }, status: value ? 200 : 404 });
             } else if (path === "/api/dash") {
                 const uuid = params.get("uuid");
+                const dev = params.get("dev");
                 const table = params.get("table");
                 const asset = params.get("asset");
                 const media = params.get("media");
                 if (uuid) {
+                    if (dev) {
+                        try {
+                            preference = JSON.parse(await env.PREFERENCE.get(uuid));
+                            preference.dev = dev;
+                            await env.PREFERENCE.put(uuid, JSON.stringify(preference));
+                            return new Response("API：偏好设置：设置保存成功：开发模式", { headers });
+                        } catch { return new Response("API：偏好设置：设置保存失败", { headers, status: 500 }); }
+                    }
                     if (table && asset && media) {
                         try {
                             await env.PREFERENCE.put(uuid, JSON.stringify({ table, asset, media }));
