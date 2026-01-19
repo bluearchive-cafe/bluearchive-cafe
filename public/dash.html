@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>蔚蓝咖啡厅控制面板</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap');
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-family: 'Kosugi Maru', sans-serif;
+            color: rgb(0, 0, 0);
+        }
+
+        video {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        content {
+            margin: 0 10vw;
+            padding: 15px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+            box-sizing: border-box;
+            border-radius: 45px;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            font-weight: 400;
+            font-size: 20pt;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            place-items: center;
+            box-sizing: border-box;
+            width: 100%;
+            padding: 15px 15px;
+            row-gap: 10vh;
+            border-radius: 30px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        footer a {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            border-radius: 12px;
+            min-width: 100px;
+            justify-content: flex-start;
+            position: relative;
+            cursor: pointer;
+            color: rgb(27, 127, 243);
+        }
+
+        footer a img {
+            width: 20px;
+            height: 20px;
+            left: 12px;
+            position: absolute;
+            opacity: 75%;
+        }
+
+        footer a span {
+            display: block;
+            text-align: center;
+            margin-left: 32px;
+            width: 100%;
+        }
+
+        .ok {
+            color: rgb(46, 204, 113);
+            font-weight: 600;
+        }
+
+        .fail {
+            color: rgb(231, 76, 60);
+            font-weight: 600;
+        }
+
+        .wait {
+            color: rgb(245, 180, 0);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <video src="assets/videos/background.mp4" autoplay muted loop playsinline></video>
+
+    <content>
+        <header>
+            <strong>蔚蓝咖啡厅控制面板</strong>
+        </header>
+
+        <main>
+            <span><strong>功能</strong></span>
+            <span>文本</span>
+            <span>图像</span>
+            <span>语音</span>
+            <span><strong>状态</strong></span>
+            <span id="table">获取中</span>
+            <span id="asset">获取中</span>
+            <span id="media">获取中</span>
+            <span><strong>启用</strong></span>
+            <input id="table-check" type="checkbox">
+            <input id="asset-check" type="checkbox">
+            <input id="media-check" type="checkbox">
+        </main>
+
+        <footer>
+            <a id="save"><img src="assets/icons/save.svg"><span>保存设置</span></a>
+            <a id="read"><img src="assets/icons/read.svg"><span>查看说明</span></a>
+            <a id="show"><img src="assets/icons/show.svg"><span>显示UUID</span></a>
+        </footer>
+    </content>
+
+    <script>
+        (async () => {
+            const params = new URLSearchParams(location.search);
+            const uuid = params.get("uuid");
+            const save = document.getElementById("save");
+            const read = document.getElementById("read");
+            const show = document.getElementById("show");
+            const resStatus = await fetch("/api/status");
+            const resDash = await fetch(`/api/dash?uuid=${uuid}`);
+
+            if (resStatus.ok) {
+                const data = await resStatus.json();
+                const applyStatus = (key, elId) => {
+                    const el = document.getElementById(elId);
+                    const official = data[key]?.official?.version;
+                    const localized = data[key]?.localized?.version;
+
+                    el.classList.remove("ok", "fail", "wait");
+
+                    if (!official || !localized) {
+                        el.textContent = "未获取";
+                        el.classList.add("wait");
+                    } else if (official === localized) {
+                        el.textContent = "已同步";
+                        el.classList.add("ok");
+                    } else {
+                        el.textContent = "未同步";
+                        el.classList.add("fail");
+                    }
+                };
+
+                applyStatus("table", "table");
+                applyStatus("asset", "asset");
+                applyStatus("media", "media");
+            }
+
+
+            if (resDash.ok) {
+                const data = await resDash.json();
+                document.getElementById("table-check").checked = data.table === "cn";
+                document.getElementById("asset-check").checked = data.asset === "cn";
+                document.getElementById("media-check").checked = data.media === "cn";
+            }
+
+            save.addEventListener("click", async () => {
+                const tableCheck = document.getElementById("table-check");
+                const assetCheck = document.getElementById("asset-check");
+                const mediaCheck = document.getElementById("media-check");
+                const table = tableCheck.checked ? "cn" : "jp";
+                const asset = assetCheck.checked ? "cn" : "jp";
+                const media = mediaCheck.checked ? "cn" : "jp";
+                const url = `/api/dash?uuid=${uuid}&table=${table}&asset=${asset}&media=${media}`;
+                const response = await fetch(url);
+                alert(response.ok ? "保存成功，重新登录以生效" : `保存失败，UUID：${uuid}`);
+            });
+
+            read.addEventListener("click", () => {
+                alert(
+                    "控制面板使用说明\n" +
+                    "1. 如果游戏异常可尝试暂时关闭文本汉化\n" +
+                    "2. 仅当同步状态为「已同步」时功能生效\n" +
+                    "3. 语音汉化功能生效范围仅限「主线剧情」\n" +
+                    "4. 请勿随意将自己的UUID泄露给其他人"
+                );
+            });
+
+            show.addEventListener("click", () => { alert(uuid); });
+        })();
+    </script>
+</body>
+
+</html>
