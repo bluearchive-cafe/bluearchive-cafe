@@ -31,6 +31,27 @@ export default {
                 if (type && scope && field) value = await env.STATUS.get([type, scope, field].join("/"));
                 else value = await env.STATUS.get("status.json");
                 return new Response(value || "API：资源状态：状态查询失败", { headers: { "Content-Type": "application/json; charset=utf-8" }, status: value ? 200 : 404 });
+            } else if (path === "/api/preference") {
+                const uuid = params.get("uuid");
+                const dev = params.get("dev");
+                const text = params.get("text");
+                const image = params.get("image");
+                const voice = params.get("voice");
+                if (uuid) {
+                    if (dev || text || image || voice) {
+                        await env.PREFERENCE.prepare(`
+                            UPDATE preference SET
+                                dev = COALESCE(?, dev),
+                                text = COALESCE(?, text),
+                                image = COALESCE(?, image),
+                                voice = COALESCE(?, voice)
+                            WHERE uuid = ?
+                        `).bind(dev, text, image, voice, uuid).run();
+                    } else {
+                        const row = (await env.PREFERENCE.prepare(`SELECT * FROM preference WHERE uuid = ?`).bind(uuid).first());
+                        return new Response(row ? JSON.stringify(row) : "API：偏好设置：设置查询失败", { headers: { "Content-Type": "application/json" }, status: row ? 200 : 404 });
+                    }
+                }
             } else if (path === "/api/dash") {
                 const uuid = params.get("uuid");
                 const table = params.get("table");

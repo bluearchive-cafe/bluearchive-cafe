@@ -10,19 +10,25 @@
 	"assets": {
 		"directory": "./public",
 		"not_found_handling": "single-page-application",
-		"run_worker_first": ["/download/*", "/api/*"]
+		"run_worker_first": [
+			"/download/*",
+			"/api/*"
+		]
 	},
 	"observability": {
 		"enabled": true
 	},
 	"kv_namespaces": [
 		{
-			"binding": "PREFERENCE",
-			"id": "6b8c26e909cc4539a071e747d4fabd8b"
-		},
-		{
 			"binding": "STATUS",
 			"id": "8ae8975ae1dc472eac0fc89b0a03c8c7"
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "PREFERENCE",
+			"database_name": "bluearchive-cafe-preference",
+			"database_id": "e9a09da4-89da-4e84-9c79-e929434a59dc"
 		}
 	],
 	"r2_buckets": [
