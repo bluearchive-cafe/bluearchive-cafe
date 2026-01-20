@@ -28,8 +28,8 @@ export default {
                 const type = params.get("type");
                 const scope = params.get("scope");
                 const field = params.get("field");
-                if (type && scope && field) value = await env.RESOURCESTATUS.get([type, scope, field].join("/"));
-                else value = await env.RESOURCESTATUS.get("status.json");
+                if (type && scope && field) value = await env.STATUS.get([type, scope, field].join("/"));
+                else value = await env.STATUS.get("status.json");
                 return new Response(value || "API：资源状态：状态查询失败", { headers: { "Content-Type": "application/json; charset=utf-8" }, status: value ? 200 : 404 });
             } else if (path === "/api/dash") {
                 const uuid = params.get("uuid");
@@ -66,7 +66,7 @@ export default {
         const { h32 } = await xxhash();
         const method = "PUT";
         const headers = new Headers({ "Authorization": `Bearer ${env.GITHUB_TOKEN}`, "User-Agent": "Cloudflare Workers" });
-        const status = JSON.parse(await env.RESOURCESTATUS.get("status.json"));
+        const status = JSON.parse(await env.STATUS.get("status.json"));
 
         try {
             const response = await fetch("https://play.google.com/store/apps/details?id=com.YostarJP.BlueArchive", { method: "GET" });
@@ -77,11 +77,11 @@ export default {
             const version = match ? match[1] : null;
             if (!version) throw new Error("解析失败");
 
-            const existing = await env.RESOURCESTATUS.get("package/official/version");
+            const existing = await env.STATUS.get("package/official/version");
             if (version > existing) {
                 const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
-                await env.RESOURCESTATUS.put("package/official/version", version);
-                await env.RESOURCESTATUS.put("package/official/time", time);
+                await env.STATUS.put("package/official/version", version);
+                await env.STATUS.put("package/official/time", time);
                 patchStatus(status, "package/official/version", version);
                 patchStatus(status, "package/official/time", time);
                 console.log(`安装包版本号更新成功：${version}`);
@@ -91,10 +91,7 @@ export default {
         try {
             const url = "https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-yostar-serverinfo/contents/public";
             const list = await (await fetch(url, { headers })).json();
-            const key = list
-                .filter(item => item.type === "file")
-                .map(item => item.name)
-                .reduce((max, name) => name > max ? name : max);
+            const key = list.filter(item => item.type === "file").map(item => item.name).reduce((max, name) => name > max ? name : max);
             const upstream = `https://yostar-serverinfo.bluearchiveyostar.com/${key}`;
             const response = await fetch(upstream);
             if (!response.ok) throw new Error(`拉取失败：${key}`);
@@ -102,7 +99,7 @@ export default {
             const text = await response.text();
             const serverinfo = JSON.parse(text);
             const hash = h32(text).toString();
-            if (hash !== await env.RESOURCESTATUS.get("info/hash")) {
+            if (hash !== await env.STATUS.get("info/hash")) {
                 const value = JSON.stringify(serverinfo, null, 2);
                 await fetch(`${url}/${key}`, {
                     method,
@@ -113,11 +110,12 @@ export default {
                         sha: (await fetch(`${url}/${key}`, { headers }).then(r => r.json()))?.sha
                     }),
                 }).then(r => r.ok ? console.log(`游戏资源信息更新成功：${key}`) : console.error(`游戏资源信息更新失败：${r.status} ${r.statusText}`));
-                await env.RESOURCESTATUS.put("info/hash", hash);
+                await env.STATUS.put("info/hash", hash);
+                await env.STATUS.put("info/version", key);
             } else console.log(`游戏资源信息检查成功：${key}`);
 
             const version = new URL(serverinfo.ConnectionGroups[0].OverrideConnectionGroups[1].AddressablesCatalogUrlRoot).pathname.slice(1);
-            if (version !== await env.RESOURCESTATUS.get("table/official/version")) {
+            if (version !== await env.STATUS.get("table/official/version")) {
                 const types = ["table", "asset", "media"];
                 const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
                 for (const type of types) {
@@ -126,8 +124,8 @@ export default {
                 }
                 await Promise.all(
                     types.flatMap(type => [
-                        env.RESOURCESTATUS.put(`${type}/official/version`, version),
-                        env.RESOURCESTATUS.put(`${type}/official/time`, time),
+                        env.STATUS.put(`${type}/official/version`, version),
+                        env.STATUS.put(`${type}/official/time`, time),
                     ])
                 );
                 console.log(`资源包版本号更新成功：${version}`)
@@ -144,7 +142,7 @@ export default {
             let noticeindex = JSON.parse(text);
             const hash = h32(text).toString();
             const version = `${noticeindex.LatestClientVersion}_${hash}`;
-            if (version !== await env.RESOURCESTATUS.get("notice/official/version")) {
+            if (version !== await env.STATUS.get("notice/official/version")) {
                 try {
                     const response = await env.AI.run('@cf/openai/gpt-oss-120b', {
                         instructions: '将日语翻译为中文，语言亲切自然，保留原有JSON结构，直接返回JSON文本，不用代码块包裹，知识库：ブルアカ=蔚蓝档案、ピックアップ=概率提升、募集=招募、総力戦=总力战、大決戦=大决战、イベント=活动、見に行く=前往观看',
@@ -182,8 +180,8 @@ export default {
                 }).then(r => r.ok ? console.log(`公告资源索引更新成功：${version}`) : console.error(`公告资源索引更新失败：${r.status} ${r.statusText}`));
 
                 const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
-                await env.RESOURCESTATUS.put("notice/official/version", version);
-                await env.RESOURCESTATUS.put("notice/official/time", time);
+                await env.STATUS.put("notice/official/version", version);
+                await env.STATUS.put("notice/official/time", time);
                 patchStatus(status, "notice/official/version", version);
                 patchStatus(status, "notice/official/time", time);
             } else console.log(`公告资源索引检查成功：${version}`);
@@ -194,15 +192,15 @@ export default {
             const types = ["package", "table", "asset", "media", "notice"];
             for (const type of types) {
                 const [version, time] = await Promise.all([
-                    env.RESOURCESTATUS.get(`${type}/localized/version`),
-                    env.RESOURCESTATUS.get(`${type}/localized/time`),
+                    env.STATUS.get(`${type}/localized/version`),
+                    env.STATUS.get(`${type}/localized/time`),
                 ]);
 
                 patchStatus(status, `${type}/localized/version`, version);
                 patchStatus(status, `${type}/localized/time`, time);
             }
             patchStatus(status, "time", time);
-            await env.RESOURCESTATUS.put("status.json", JSON.stringify(status, null, 2));
+            await env.STATUS.put("status.json", JSON.stringify(status, null, 2));
             console.log(`资源状态信息更新成功：${time}`);
         } catch (err) { console.error(`资源状态信息更新失败：${err}`); }
     },

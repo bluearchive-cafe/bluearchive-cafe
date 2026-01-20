@@ -21,16 +21,8 @@
 			"id": "6b8c26e909cc4539a071e747d4fabd8b"
 		},
 		{
-			"binding": "RESOURCESTATUS",
+			"binding": "STATUS",
 			"id": "8ae8975ae1dc472eac0fc89b0a03c8c7"
-		},
-		{
-			"binding": "SERVERINFO",
-			"id": "9d35490828544a4394113ffda0b0e390"
-		},
-		{
-			"binding": "NOTICEINDEX",
-			"id": "5011cc6edebc4aa69618fd744690e22e"
 		}
 	],
 	"r2_buckets": [
