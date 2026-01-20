@@ -96,7 +96,7 @@ export default {
             const text = await response.text();
             const serverinfo = JSON.parse(text);
             const hash = h32(text).toString();
-            if (hash !== await env.SERVERINFO.get("info.hash")) {
+            if (hash !== await env.RESOURCESTATUS.get("info/hash")) {
                 const value = JSON.stringify(serverinfo, null, 2);
                 let sha = (await fetch(
                     `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-yostar-serverinfo/contents/public/${key}`,
@@ -112,14 +112,13 @@ export default {
                             "User-Agent": "Cloudflare Workers"
                         },
                         body: JSON.stringify({
-                            message: `更新服务器信息：${key}`,
+                            message: `更新游戏资源信息：${key}`,
                             content: btoa(value),
                             sha
                         }),
                     }
-                ).then(r => r.ok || console.error(`游戏资源信息提交失败：${r.status} ${r.statusText}`));
-                await env.SERVERINFO.put(key, value);
-                await env.SERVERINFO.put("info.hash", hash)
+                ).then(r => r.ok ? console.log(`游戏资源信息提交成功：${version}`) : console.error(`游戏资源信息提交失败：${r.status} ${r.statusText}`));
+                await env.RESOURCESTATUS.put("info/hash", hash);
                 console.log(`游戏资源信息更新成功：${key}`);
             } else console.log(`游戏资源信息检查成功：${key}`);
 
@@ -151,7 +150,7 @@ export default {
             let noticeindex = JSON.parse(text);
             const hash = h32(text).toString();
             const version = `${noticeindex.LatestClientVersion}_${hash}`;
-            if (hash !== await env.NOTICEINDEX.get("prod/index.hash")) {
+            if (hash !== await env.RESOURCESTATUS.get("index/hash")) {
                 try {
                     const response = await env.AI.run('@cf/openai/gpt-oss-120b', {
                         instructions: '将日语翻译为中文，语言亲切自然，保留原有JSON结构，不用代码块包裹，直接返回JSON文本，尽量选用下列词语：蔚蓝档案、PickUp、总力战、大决战、活动、招募等与游戏《蔚蓝档案》相关的词语',
@@ -196,11 +195,10 @@ export default {
                             sha
                         }),
                     }
-                ).then(r => r.ok || console.error(`公告资源索引提交失败：${r.status} ${r.statusText}`));
+                ).then(r => r.ok ? console.log(`公告资源索引提交成功：${version}`) : console.error(`公告资源索引提交失败：${r.status} ${r.statusText}`));
 
                 const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
-                await env.NOTICEINDEX.put(key, value);
-                await env.NOTICEINDEX.put("prod/index.hash", hash);
+                await env.RESOURCESTATUS.put("index/hash", hash);
                 await env.RESOURCESTATUS.put("notice/official/version", version);
                 await env.RESOURCESTATUS.put("notice/official/time", time);
                 patchStatus(status, "notice/official/version", version);
