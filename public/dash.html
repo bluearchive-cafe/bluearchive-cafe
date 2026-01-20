@@ -96,6 +96,11 @@
             width: 100%;
         }
 
+        .wait {
+            color: rgb(245, 180, 0);
+            font-weight: 600;
+        }
+
         .ok {
             color: rgb(46, 204, 113);
             font-weight: 600;
@@ -103,11 +108,6 @@
 
         .fail {
             color: rgb(231, 76, 60);
-            font-weight: 600;
-        }
-
-        .wait {
-            color: rgb(245, 180, 0);
             font-weight: 600;
         }
     </style>
@@ -127,13 +127,13 @@
             <span>图像</span>
             <span>语音</span>
             <span><strong>状态</strong></span>
-            <span id="table">获取中</span>
-            <span id="asset">获取中</span>
-            <span id="media">获取中</span>
+            <span id="text">获取中</span>
+            <span id="image">获取中</span>
+            <span id="voice">获取中</span>
             <span><strong>启用</strong></span>
-            <input id="table-check" type="checkbox">
-            <input id="asset-check" type="checkbox">
-            <input id="media-check" type="checkbox">
+            <input id="text-check" type="checkbox">
+            <input id="image-check" type="checkbox">
+            <input id="voice-check" type="checkbox">
         </main>
 
         <footer>
@@ -147,69 +147,76 @@
         (async () => {
             const params = new URLSearchParams(location.search);
             const uuid = params.get("uuid");
-            const save = document.getElementById("save");
-            const read = document.getElementById("read");
-            const show = document.getElementById("show");
-            const resStatus = await fetch("/api/status");
-            const resDash = await fetch(`/api/dash?uuid=${uuid}`);
+            const [status, preference] = await Promise.all([
+                fetch("/api/status"),
+                fetch(`/api/preference?uuid=${uuid}`)
+            ]);
 
-            if (resStatus.ok) {
-                const data = await resStatus.json();
-                const applyStatus = (key, elId) => {
-                    const el = document.getElementById(elId);
-                    const official = data[key]?.official?.version;
-                    const localized = data[key]?.localized?.version;
+            const data = status.ok ? await status.json() : null;
+            ["text", "image", "voice"].forEach(key => {
+                const el = document.getElementById(key);
+                el.classList.remove("ok", "fail", "wait");
 
-                    el.classList.remove("ok", "fail", "wait");
+                if (!status.ok) {
+                    el.textContent = "未获取";
+                    el.classList.add("wait");
+                    return;
+                }
 
-                    if (!official || !localized) {
-                        el.textContent = "未获取";
-                        el.classList.add("wait");
-                    } else if (official === localized) {
-                        el.textContent = "已同步";
-                        el.classList.add("ok");
-                    } else {
-                        el.textContent = "未同步";
-                        el.classList.add("fail");
-                    }
+                const official = data[key]?.official?.version;
+                const localized = data[key]?.localized?.version;
+
+                if (!official || !localized) {
+                    el.textContent = "未获取";
+                    el.classList.add("wait");
+                } else if (official === localized) {
+                    el.textContent = "已同步";
+                    el.classList.add("ok");
+                } else {
+                    el.textContent = "未同步";
+                    el.classList.add("fail");
+                }
+            });
+
+            let text, image, voice;
+            if (preference.ok) {
+                ({ text, image, voice } = await preference.json());
+                document.getElementById("text-check").checked = text === "true";
+                document.getElementById("image-check").checked = image === "true";
+                document.getElementById("voice-check").checked = voice === "true";
+            } else text = image = voice = "false";
+
+            document.getElementById("save").addEventListener("click", async () => {
+                const preference = {
+                    text: document.getElementById("text-check").checked ? "true" : "false",
+                    image: document.getElementById("image-check").checked ? "true" : "false",
+                    voice: document.getElementById("voice-check").checked ? "true" : "false"
                 };
 
-                applyStatus("table", "table");
-                applyStatus("asset", "asset");
-                applyStatus("media", "media");
-            }
+                if (preference.text === text && preference.image === image && preference.voice === voice) {
+                    alert("保存失败，没有需要保存的设置");
+                    return;
+                }
 
-
-            if (resDash.ok) {
-                const data = await resDash.json();
-                document.getElementById("table-check").checked = data.table === "cn";
-                document.getElementById("asset-check").checked = data.asset === "cn";
-                document.getElementById("media-check").checked = data.media === "cn";
-            }
-
-            save.addEventListener("click", async () => {
-                const tableCheck = document.getElementById("table-check");
-                const assetCheck = document.getElementById("asset-check");
-                const mediaCheck = document.getElementById("media-check");
-                const table = tableCheck.checked ? "cn" : "jp";
-                const asset = assetCheck.checked ? "cn" : "jp";
-                const media = mediaCheck.checked ? "cn" : "jp";
-                const url = `/api/dash?uuid=${uuid}&table=${table}&asset=${asset}&media=${media}`;
-                const response = await fetch(url);
-                alert(response.ok ? "保存成功，重新登录以生效" : `保存失败，UUID：${uuid}`);
+                const response = await fetch(`/api/preference?uuid=${uuid}&text=${preference.text}&image=${preference.image}&voice=${preference.voice}`);
+                if (response.ok) {
+                    ({ text, image, voice } = preference);
+                    alert("保存成功，重新登录游戏以生效");
+                } else alert(`保存失败：${response.status} ${response.statusText}`);
             });
 
-            read.addEventListener("click", () => {
-                alert(
-                    "控制面板使用说明\n" +
-                    "1. 如果游戏异常可尝试暂时关闭文本汉化\n" +
-                    "2. 仅当同步状态为「已同步」时功能生效\n" +
-                    "3. 语音汉化功能生效范围仅限「主线剧情」\n" +
-                    "4. 请勿随意将自己的UUID泄露给其他人"
-                );
+            document.getElementById("read").addEventListener("click", () => {
+                alert(`控制面板使用说明
+1. 如果游戏异常可尝试暂时关闭文本汉化
+2. 仅当同步状态为「已同步」时功能生效
+3. 语音汉化功能生效范围仅限「主线剧情」
+4. 请勿随意将自己的UUID泄露给其他人`);
             });
 
-            show.addEventListener("click", () => { alert(uuid); });
+            document.getElementById("show").addEventListener("click", () => {
+                alert(`UUID
+${uuid}`);
+            });
         })();
     </script>
 </body>
