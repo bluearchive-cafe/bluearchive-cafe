@@ -39,37 +39,23 @@ export default {
                 const voice = params.get("voice");
                 if (uuid) {
                     if (dev || text || image || voice) {
-                        await env.PREFERENCE.prepare(`
-                            UPDATE preference SET
-                                dev = COALESCE(?, dev),
-                                text = COALESCE(?, text),
-                                image = COALESCE(?, image),
-                                voice = COALESCE(?, voice)
-                            WHERE uuid = ?
-                        `).bind(dev, text, image, voice, uuid).run();
-                    } else {
-                        const row = (await env.PREFERENCE.prepare(`SELECT * FROM preference WHERE uuid = ?`).bind(uuid).first());
-                        return new Response(row ? JSON.stringify(row) : "API：偏好设置：设置查询失败", { headers: { "Content-Type": "application/json" }, status: row ? 200 : 404 });
-                    }
-                }
-            } else if (path === "/api/dash") {
-                const uuid = params.get("uuid");
-                const table = params.get("table");
-                const asset = params.get("asset");
-                const media = params.get("media");
-                if (uuid) {
-                    if (table && asset && media) {
                         try {
-                            await env.PREFERENCE.put(uuid, JSON.stringify({ table, asset, media }));
-                            return new Response("API：偏好设置：设置保存成功", { headers });
-                        } catch { return new Response("API：偏好设置：设置保存失败", { headers, status: 500 }); }
-                    } else if (table || asset || media) {
-                        return new Response("API：偏好设置：设置参数缺失", { headers, status: 400 });
-                    } else {
-                        const preference = await env.PREFERENCE.get(uuid);
-                        return new Response(preference || "API：偏好设置：设置查询失败", { headers: { "Content-Type": "application/json" }, status: preference ? 200 : 404 });
+                            const result = await env.PREFERENCE.prepare(`
+                                UPDATE preference SET
+                                    dev   = COALESCE(?, dev),
+                                    text  = COALESCE(?, text),
+                                    image = COALESCE(?, image),
+                                    voice = COALESCE(?, voice)
+                                WHERE uuid = ?`
+                            ).bind(dev, text, image, voice, uuid).run();
+                            if (result.changes === 0) return new Response("API：偏好设置：设置保存失败", { headers, status: 404 });
+                            return new Response("API：偏好设置：设置保存成功", { headers, status: 200 });
+                        } catch (e) { return new Response("API：偏好设置：设置写入失败", { headers, status: 500 }); }
                     }
-                } else return new Response("API：偏好设置：查询参数缺失", { headers, status: 400 });
+                    const row = (await env.PREFERENCE.prepare(`SELECT * FROM preference WHERE uuid = ?`).bind(uuid).first());
+                    return new Response(row ? JSON.stringify(row) : "API：偏好设置：设置查询失败", { headers: { "Content-Type": "application/json; charset=utf-8" }, status: row ? 200 : 404 });
+                }
+                return new Response("API：偏好设置：查询参数缺失", { headers, status: 400 });
             } else if (path === "/api/install") {
                 const scheme = params.get("scheme");
                 const map = {
