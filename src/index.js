@@ -192,7 +192,7 @@ export default {
                         },
                         body: JSON.stringify({
                             message: `更新公告资源索引：${version}`,
-                            content: btoa(value),
+                            content: btoa(String.fromCharCode(...new TextEncoder().encode(value))),
                             sha
                         }),
                     }
