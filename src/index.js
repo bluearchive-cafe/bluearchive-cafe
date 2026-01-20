@@ -89,7 +89,7 @@ export default {
         try {
             const list = await env.SERVERINFO.list();
             const key = list.keys.map(k => k.name).sort().at(-1);
-            const upstream = "https://yostar-serverinfo.bluearchiveyostar.com/" + key;
+            const upstream = `https://yostar-serverinfo.bluearchiveyostar.com/${key}`;
             const response = await fetch(upstream);
             if (!response.ok) throw new Error(`拉取失败：${key}`);
 
@@ -98,6 +98,26 @@ export default {
             const hash = h32(text).toString();
             if (hash !== await env.SERVERINFO.get("info.hash")) {
                 const value = JSON.stringify(serverinfo, null, 2);
+                let sha = (await fetch(
+                    `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-yostar-serverinfo/contents/public/${key}`,
+                    { headers: { "Authorization": `token ${env.GITHUB_TOKEN}`, "User-Agent": "Cloudflare Workers" } }
+                ).then(r => r.json()))?.sha;
+                await fetch(
+                    `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-yostar-serverinfo/contents/public/${key}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Authorization": `token ${env.GITHUB_TOKEN}`,
+                            "Content-Type": "application/json",
+                            "User-Agent": "Cloudflare Workers"
+                        },
+                        body: JSON.stringify({
+                            message: `更新服务器信息：${key}`,
+                            content: btoa(value),
+                            sha
+                        }),
+                    }
+                ).then(r => r.ok || console.error(`游戏资源信息提交失败：${r.status} ${r.statusText}`));
                 await env.SERVERINFO.put(key, value);
                 await env.SERVERINFO.put("info.hash", hash)
                 console.log(`游戏资源信息更新成功：${key}`);
@@ -123,7 +143,7 @@ export default {
 
         try {
             const key = "prod/index.json";
-            const upstream = "https://prod-noticeindex.bluearchiveyostar.com/" + key;
+            const upstream = `https://prod-noticeindex.bluearchiveyostar.com/${key}`;
             const response = await fetch(upstream);
             if (!response.ok) throw new Error("拉取失败");
 
@@ -157,6 +177,27 @@ export default {
                 }
 
                 const value = JSON.stringify(noticeindex, null, 2);
+                let sha = (await fetch(
+                    `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-prod-noticeindex/contents/public/${key}`,
+                    { headers: { "Authorization": `token ${env.GITHUB_TOKEN}`, "User-Agent": "Cloudflare Workers" } }
+                ).then(r => r.json()))?.sha;
+                await fetch(
+                    `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-prod-noticeindex/contents/public/${key}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Authorization": `token ${env.GITHUB_TOKEN}`,
+                            "Content-Type": "application/json",
+                            "User-Agent": "Cloudflare Workers"
+                        },
+                        body: JSON.stringify({
+                            message: `更新公告资源索引：${version}`,
+                            content: btoa(value),
+                            sha
+                        }),
+                    }
+                ).then(r => r.ok || console.error(`公告资源索引提交失败：${r.status} ${r.statusText}`));
+
                 const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
                 await env.NOTICEINDEX.put(key, value);
                 await env.NOTICEINDEX.put("prod/index.hash", hash);
