@@ -64,6 +64,8 @@ export default {
 
     async scheduled(controller, env, ctx) {
         const { h32 } = await xxhash();
+        const method = "PUT";
+        const headers = new Headers({ "Authorization": `Bearer ${env.GITHUB_TOKEN}`, "User-Agent": "Cloudflare Workers" });
         const status = JSON.parse(await env.RESOURCESTATUS.get("status.json"));
 
         try {
@@ -87,8 +89,12 @@ export default {
         } catch (err) { console.error(`安装包版本号检查失败：${err}`); }
 
         try {
-            const list = await env.SERVERINFO.list();
-            const key = list.keys.map(k => k.name).sort().at(-1);
+            const url = "https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-yostar-serverinfo/contents/public";
+            const list = await (await fetch(url, { headers })).json();
+            const key = list
+                .filter(item => item.type === "file")
+                .map(item => item.name)
+                .reduce((max, name) => name > max ? name : max);
             const upstream = `https://yostar-serverinfo.bluearchiveyostar.com/${key}`;
             const response = await fetch(upstream);
             if (!response.ok) throw new Error(`拉取失败：${key}`);
@@ -98,28 +104,16 @@ export default {
             const hash = h32(text).toString();
             if (hash !== await env.RESOURCESTATUS.get("info/hash")) {
                 const value = JSON.stringify(serverinfo, null, 2);
-                let sha = (await fetch(
-                    `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-yostar-serverinfo/contents/public/${key}`,
-                    { headers: { "Authorization": `token ${env.GITHUB_TOKEN}`, "User-Agent": "Cloudflare Workers" } }
-                ).then(r => r.json()))?.sha;
-                await fetch(
-                    `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-yostar-serverinfo/contents/public/${key}`,
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Authorization": `token ${env.GITHUB_TOKEN}`,
-                            "Content-Type": "application/json",
-                            "User-Agent": "Cloudflare Workers"
-                        },
-                        body: JSON.stringify({
-                            message: `更新游戏资源信息：${key}`,
-                            content: btoa(value),
-                            sha
-                        }),
-                    }
-                ).then(r => r.ok ? console.log(`游戏资源信息提交成功：${version}`) : console.error(`游戏资源信息提交失败：${r.status} ${r.statusText}`));
+                await fetch(`${url}/${key}`, {
+                    method,
+                    headers,
+                    body: JSON.stringify({
+                        message: `更新游戏资源信息：${key}`,
+                        content: btoa(value),
+                        sha: (await fetch(`${url}/${key}`, { headers }).then(r => r.json()))?.sha
+                    }),
+                }).then(r => r.ok ? console.log(`游戏资源信息更新成功：${key}`) : console.error(`游戏资源信息更新失败：${r.status} ${r.statusText}`));
                 await env.RESOURCESTATUS.put("info/hash", hash);
-                console.log(`游戏资源信息更新成功：${key}`);
             } else console.log(`游戏资源信息检查成功：${key}`);
 
             const version = new URL(serverinfo.ConnectionGroups[0].OverrideConnectionGroups[1].AddressablesCatalogUrlRoot).pathname.slice(1);
@@ -150,10 +144,10 @@ export default {
             let noticeindex = JSON.parse(text);
             const hash = h32(text).toString();
             const version = `${noticeindex.LatestClientVersion}_${hash}`;
-            if (hash !== await env.RESOURCESTATUS.get("index/hash")) {
+            if (version !== await env.RESOURCESTATUS.get("notice/official/version")) {
                 try {
                     const response = await env.AI.run('@cf/openai/gpt-oss-120b', {
-                        instructions: '将日语翻译为中文，语言亲切自然，保留原有JSON结构，不用代码块包裹，直接返回JSON文本，尽量选用下列词语：蔚蓝档案、PickUp、总力战、大决战、活动、招募等与游戏《蔚蓝档案》相关的词语',
+                        instructions: '将日语翻译为中文，语言亲切自然，保留原有JSON结构，直接返回JSON文本，不用代码块包裹，知识库：ブルアカ=蔚蓝档案、ピックアップ=概率提升、募集=招募、総力戦=总力战、大決戦=大决战、イベント=活动、見に行く=前往观看',
                         input: text,
                     });
                     text = response.output[1].content[0].text;
@@ -175,35 +169,23 @@ export default {
                     }
                 }
 
+                const url = "https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-prod-noticeindex/contents/public";
                 const value = JSON.stringify(noticeindex, null, 2);
-                let sha = (await fetch(
-                    `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-prod-noticeindex/contents/public/${key}`,
-                    { headers: { "Authorization": `token ${env.GITHUB_TOKEN}`, "User-Agent": "Cloudflare Workers" } }
-                ).then(r => r.json()))?.sha;
-                await fetch(
-                    `https://api.github.com/repos/bluearchive-cafe/bluearchive-cafe-prod-noticeindex/contents/public/${key}`,
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Authorization": `token ${env.GITHUB_TOKEN}`,
-                            "Content-Type": "application/json",
-                            "User-Agent": "Cloudflare Workers"
-                        },
-                        body: JSON.stringify({
-                            message: `更新公告资源索引：${version}`,
-                            content: btoa(String.fromCharCode(...new TextEncoder().encode(value))),
-                            sha
-                        }),
-                    }
-                ).then(r => r.ok ? console.log(`公告资源索引提交成功：${version}`) : console.error(`公告资源索引提交失败：${r.status} ${r.statusText}`));
+                await fetch(`${url}/${key}`, {
+                    method,
+                    headers,
+                    body: JSON.stringify({
+                        message: `更新公告资源索引：${version}`,
+                        content: btoa(String.fromCharCode(...new TextEncoder().encode(value))),
+                        sha: (await fetch(`${url}/${key}`, { headers }).then(r => r.json()))?.sha
+                    }),
+                }).then(r => r.ok ? console.log(`公告资源索引更新成功：${version}`) : console.error(`公告资源索引更新失败：${r.status} ${r.statusText}`));
 
                 const time = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
-                await env.RESOURCESTATUS.put("index/hash", hash);
                 await env.RESOURCESTATUS.put("notice/official/version", version);
                 await env.RESOURCESTATUS.put("notice/official/time", time);
                 patchStatus(status, "notice/official/version", version);
                 patchStatus(status, "notice/official/time", time);
-                console.log(`公告资源索引更新成功：${version}`);
             } else console.log(`公告资源索引检查成功：${version}`);
         } catch (err) { console.error(`公告资源索引检查失败：${err}`); }
 
