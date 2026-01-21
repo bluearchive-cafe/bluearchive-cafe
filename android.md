@@ -3,17 +3,20 @@
 <h1>Android 端使用说明</h1>
 </div>
 
-> 汉化组已与 `OurPlay加速器` 和 `Kuyo加速器` 达成合作，同步汉化组的汉化资源，如有需要可前往使用
+> 汉化组已与 `OurPlay加速器` 和 `Kuyo加速器` 达成合作，同步汉化组的文本资源，如有需要可前往使用
 
 ## 一、安装
 
-> 本站提供汉化版 Android 游戏客户端，点击下载
+> 本站提供汉化版 Android 游戏客户端，点击下载，如需保留原版客户端，请使用共存版客户端
 
 
 
 <div class="badges" align="center">
 <a href="https://bluearchive.cafe/download/com.YostarJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener">
 <img src="https://custom-icon-badges.demolab.com/badge/Android-汉化版客户端-green.svg?logo=android">
+</a>
+<a href="https://bluearchive.cafe/download/com.BCJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener">
+<img src="https://custom-icon-badges.demolab.com/badge/Android-共存版客户端-green.svg?logo=android">
 </a>
 </div>
 
@@ -27,13 +30,13 @@
 
 #### Use of unauthorized apps
 
-> `设备上存在非法应用`、`使用模拟器`、`Root设备` 都有可能导致该问题，请老师尝试 `清除非法应用或关闭获取应用列表权限`、`使用汉化版而非共存版客户端或更换模拟器`、`关闭Root权限`
+> `设备上存在非法应用`、`使用模拟器`、`Root设备` 都有可能导致该问题，请老师尝试 `清除非法应用或关闭获取应用列表权限`、`使用PC版、使用汉化版而非共存版客户端或更换模拟器`、`关闭Root权限`
 
 ### **安卓**
 
 #### 无法覆盖原版客户端安装
 
-> 因签名不同，需要先卸载原版客户端，再安装汉化版客户端，如需保留原版客户端，请使用<strong><a href="https://bluearchive.cafe/download/com.BCJP.BlueArchive.apk" title="点击下载" target="_blank" rel="noopener">共存版客户端</a></strong>
+> 因签名不同，需要先卸载原版客户端，再安装汉化版客户端，如需保留原版客户端，请使用 `共存版客户端`
 
 #### 需下载最新版本客户端
 
