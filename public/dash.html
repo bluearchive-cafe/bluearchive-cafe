@@ -139,7 +139,7 @@
         <footer>
             <a id="save"><img src="assets/icons/save.svg"><span>保存设置</span></a>
             <a id="read"><img src="assets/icons/read.svg"><span>查看说明</span></a>
-            <a id="show"><img src="assets/icons/show.svg"><span>显示UUID</span></a>
+            <a id="copy"><img src="assets/icons/copy.svg"><span>显示UUID</span></a>
         </footer>
     </content>
 
@@ -200,15 +200,15 @@
                 };
 
                 if (preference.text === text && preference.image === image && preference.voice === voice) {
-                    alert("保存失败，没有需要保存的设置");
+                    alert(`保存失败\n没有需要保存的设置`);
                     return;
                 }
 
                 const response = await fetch(`/api/preference?uuid=${uuid}&text=${preference.text}&image=${preference.image}&voice=${preference.voice}`);
                 if (response.ok) {
                     ({ text, image, voice } = preference);
-                    alert("保存成功，重新登录游戏以生效");
-                } else alert(`保存失败：${response.status} ${response.statusText}`);
+                    alert(`保存成功\n重新登录游戏以生效`);
+                } else alert(`保存失败\n${response.status} ${response.statusText}`);
             });
 
             document.getElementById("read").addEventListener("click", () => {
@@ -219,13 +219,11 @@
 4. 请勿随意将自己的UUID泄露给其他人`);
             });
 
-            document.getElementById("show").addEventListener("click", async () => {
+            document.getElementById("copy").addEventListener("click", async () => {
                 try {
                     await navigator.clipboard.writeText(uuid);
-                    alert(`UUID\n已复制到剪贴板`);
-                } catch (err) {
-                    alert(`UUID\n${uuid}`);
-                }
+                    alert(`UUID\n已复制到剪贴板\n${uuid}`);
+                } catch { alert(`UUID\n未复制到剪贴板\n${uuid}`); }
             });
         })();
     </script>
