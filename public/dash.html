@@ -151,10 +151,15 @@
                 fetch("/api/status"),
                 fetch(`/api/preference?uuid=${uuid}`)
             ]);
+            const map = {
+                text: "table",
+                image: "asset",
+                voice: "media"
+            };
 
             const data = status.ok ? await status.json() : null;
-            ["text", "image", "voice"].forEach(key => {
-                const el = document.getElementById(key);
+            ["text", "image", "voice"].forEach(id => {
+                const el = document.getElementById(id);
                 el.classList.remove("ok", "fail", "wait");
 
                 if (!status.ok) {
@@ -163,6 +168,7 @@
                     return;
                 }
 
+                const key = map[id];
                 const official = data[key]?.official?.version;
                 const localized = data[key]?.localized?.version;
 
