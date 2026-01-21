@@ -219,9 +219,13 @@
 4. 请勿随意将自己的UUID泄露给其他人`);
             });
 
-            document.getElementById("show").addEventListener("click", () => {
-                alert(`UUID
-${uuid}`);
+            document.getElementById("show").addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(uuid);
+                    alert(`UUID\n已复制到剪贴板`);
+                } catch (err) {
+                    alert(`UUID\n${uuid}`);
+                }
             });
         })();
     </script>
