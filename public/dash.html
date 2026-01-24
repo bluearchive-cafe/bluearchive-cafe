@@ -17,14 +17,11 @@
             justify-content: center;
             font-family: 'Kosugi Maru', sans-serif;
             color: rgb(0, 0, 0);
-        }
-
-        video {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
+            background-image: url("assets/images/background.png");
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
         content {
@@ -114,8 +111,6 @@
 </head>
 
 <body>
-    <video src="assets/videos/background.mp4" autoplay muted loop playsinline></video>
-
     <content>
         <header>
             <strong>蔚蓝咖啡厅控制面板</strong>
