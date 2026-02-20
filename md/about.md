@@ -9,43 +9,6 @@
 > <a href="https://github.com/bluearchive-cafe" target="_blank" rel="noopener">bluearchive-cafe</a>
 > </p>
 
-<div class="cards">
-<div class="card">
-<div class="table about">
-<img class="icon" src="../public/assets/images/momoi.png">
-<span class="name">北辰</span>
-<span class="desc">汉化包资源维护</span>
-<div class="buttons">
-<a href="https://space.bilibili.com/602821873" class="color" title="点击跳转" target="_blank" rel="noopener">
-<img src="../public/assets/icons/bilibili.png">
-<span>哔哩哔哩</span>
-</a>
-<a href="https://github.com/beichen23333" class="mono" title="点击跳转" target="_blank" rel="noopener">
-<img src="../public/assets/icons/github.png">
-<span>GitHub</span>
-</a>
-</div>
-</div>
-</div>
-
-<div class="card">
-<div class="table about">
-<img class="icon" src="../public/assets/images/midori.png">
-<span class="name">roundRekt</span>
-<span class="desc">汉化站网络维护</span>
-<div class="buttons">
-<a href="https://space.bilibili.com/2122119709" class="color" title="点击跳转" target="_blank" rel="noopener">
-<img src="../public/assets/icons/bilibili.png">
-<span>哔哩哔哩</span>
-</a>
-<a href="https://github.com/roundRekt" class="mono" title="点击跳转" target="_blank" rel="noopener">
-<img src="../public/assets/icons/github.png">
-<span>GitHub</span>
-</a>
-</div>
-</div>
-</div>
-
 <div class="card">
 <div class="table about">
 <img class="icon" src="../public/assets/images/shiroko.png">
