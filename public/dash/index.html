@@ -17,7 +17,7 @@
             justify-content: center;
             font-family: 'Kosugi Maru', sans-serif;
             color: rgb(0, 0, 0);
-            background-image: url("/assets/images/background.png");
+            background-image: url("background.png");
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
@@ -93,13 +93,13 @@
             width: 100%;
         }
 
-        .wait {
-            color: rgb(245, 180, 0);
+        .sync {
+            color: rgb(46, 204, 113);
             font-weight: 600;
         }
 
-        .ok {
-            color: rgb(46, 204, 113);
+        .wait {
+            color: rgb(245, 180, 0);
             font-weight: 600;
         }
 
@@ -113,7 +113,7 @@
 <body>
     <content>
         <header>
-            <strong>蔚蓝咖啡厅控制面板</strong>
+            <span><strong>蔚蓝咖啡厅控制面板</strong></span>
         </header>
 
         <main>
@@ -122,105 +122,102 @@
             <span>主线中配</span>
             <span>图像视频</span>
             <span><strong>状态</strong></span>
-            <span id="text">获取中</span>
-            <span id="voice">获取中</span>
-            <span id="media">获取中</span>
+            <span id="text-status" class="wait">获取中</span>
+            <span id="voice-status" class="wait">获取中</span>
+            <span id="media-status" class="wait">获取中</span>
             <span><strong>启用</strong></span>
-            <input id="text-check" type="checkbox">
-            <input id="voice-check" type="checkbox">
-            <input id="media-check" type="checkbox">
+            <input id="text-checkbox" type="checkbox">
+            <input id="voice-checkbox" type="checkbox">
+            <input id="media-checkbox" type="checkbox">
         </main>
 
         <footer>
-            <a id="save"><img src="/assets/icons/save.svg"><span>保存设置</span></a>
-            <a id="read"><img src="/assets/icons/read.svg"><span>查看说明</span></a>
-            <a id="copy"><img src="/assets/icons/copy.svg"><span>显示UUID</span></a>
+            <a id="save-button"><img src="save.svg"><span>保存设置</span></a>
+            <a id="read-button"><img src="read.svg"><span>查看说明</span></a>
+            <a id="copy-button"><img src="copy.svg"><span>复制信息</span></a>
         </footer>
     </content>
 
-    <script>
-        (async () => {
-            const params = new URLSearchParams(location.search);
-            const uid = params.get("uid");
-            const [status, preference] = await Promise.all([
-                fetch("https://api.bluearchive.cafe/status/list"),
-                fetch(`https://api.bluearchive.cafe/config/get?uid=${uid}`)
-            ]);
-            const map = {
-                text: "text",
-                voice: "voice",
-                media: "media"
-            };
+    <script type="module">
+        const element = (id) => document.getElementById(id);
+        const getUid = () => document.cookie.split("uid=")[1]?.split(";")[0];
+        const getPwd = () => document.cookie.split("pwd=")[1]?.split(";")[0];
 
-            const data = status.ok ? await status.json() : null;
-            ["text", "voice", "media"].forEach(id => {
-                const el = document.getElementById(id);
-                el.classList.remove("ok", "fail", "wait");
+        const uid = getUid();
+        const [statusRes, configRes] = await Promise.all([
+            fetch("https://api.bluearchive.cafe/status/list"),
+            uid ? fetch("https://api.bluearchive.cafe/config/get?uid=" + uid) : {}
+        ]);
 
-                if (!status.ok) {
-                    el.textContent = "未获取";
-                    el.classList.add("wait");
-                    return;
-                }
+        if (statusRes.ok) {
+            const status = await statusRes.json();
+            const textSynced = status.text.official.version === status.text.localized.version;
+            const voiceSynced = status.voice.official.version === status.voice.localized.version;
+            const mediaSynced = status.media.official.version === status.media.localized.version;
 
-                const key = map[id];
-                const official = data[key]?.official?.version;
-                const localized = data[key]?.localized?.version;
+            element("text-status").textContent = textSynced ? "已同步" : "未同步";
+            element("voice-status").textContent = voiceSynced ? "已同步" : "未同步";
+            element("media-status").textContent = mediaSynced ? "已同步" : "未同步";
 
-                if (!official || !localized) {
-                    el.textContent = "未获取";
-                    el.classList.add("wait");
-                } else if (official === localized) {
-                    el.textContent = "已同步";
-                    el.classList.add("ok");
-                } else {
-                    el.textContent = "未同步";
-                    el.classList.add("fail");
-                }
-            });
+            element("text-status").className = textSynced ? "sync" : "fail";
+            element("voice-status").className = voiceSynced ? "sync" : "fail";
+            element("media-status").className = mediaSynced ? "sync" : "fail";
+        }
 
-            let text, image, voice, media;
-            if (preference.ok) {
-                ({ text, image, voice, media } = await preference.json());
-                document.getElementById("text-check").checked = text === "cn";
-                document.getElementById("voice-check").checked = voice === "cn";
-                document.getElementById("media-check").checked = media === "cn";
-            } else text = voice = media = "jp";
+        if (configRes.ok) {
+            const config = await configRes.json();
 
-            document.getElementById("save").addEventListener("click", async () => {
-                const preference = {
-                    text: document.getElementById("text-check").checked ? "cn" : "jp",
-                    voice: document.getElementById("voice-check").checked ? "cn" : "jp",
-                    media: document.getElementById("media-check").checked ? "cn" : "jp"
-                };
+            element("text-checkbox").checked = config.text === "cn";
+            element("voice-checkbox").checked = config.voice === "cn";
+            element("media-checkbox").checked = config.media === "cn";
+        }
 
-                if (preference.text === text && preference.voice === voice && preference.media === media) {
-                    alert(`保存失败\n没有需要保存的设置`);
-                    return;
-                }
+        element("save-button").onclick = async () => {
+            let action = "update";
+            let uid = getUid();
+            let pwd = getPwd();
 
-                const response = await fetch(`https://api.bluearchive.cafe/config/update?uid=${uid}&text=${preference.text}&voice=${preference.voice}&media=${preference.media}`);
-                if (response.ok) {
-                    ({ text, voice, media } = preference);
-                    alert(`保存成功\n重新登录游戏以生效`);
-                } else alert(`保存失败\n${response.status} ${response.statusText}`);
-            });
+            if (!uid || !pwd) {
+                action = "init";
+                uid = new URLSearchParams(location.search).get("uid");
+                pwd = Math.random().toString(36).slice(-8);
+            }
 
-            document.getElementById("read").addEventListener("click", () => {
-                alert(`控制面板使用说明
+            const text = element("text-checkbox").checked ? "cn" : "jp";
+            const voice = element("voice-checkbox").checked ? "cn" : "jp";
+            const media = element("media-checkbox").checked ? "cn" : "jp";
+            const params = new URLSearchParams({ uid, pwd, text, voice, media });
+            const response = await fetch(`https://api.bluearchive.cafe/config/${action}?${params}`);
+
+            if (action === "init" && response.ok) {
+                document.cookie = `uid=${uid}; Max-Age=2147483647`;
+                document.cookie = `pwd=${pwd}; Max-Age=2147483647`;
+            }
+
+            if (action === "update" && response.status === 404) {
+                document.cookie = `uid=; Max-Age=0`;
+                document.cookie = `pwd=; Max-Age=0`;
+            }
+            
+            alert(await response.text());
+        };
+
+        element("read-button").onclick = () => alert(`控制面板使用说明
 1. 如果游戏异常可尝试暂时关闭文本汉化
 2. 仅当同步状态为「已同步」时功能生效
 3. 语音汉化功能生效范围仅限「主线剧情」
-4. 请勿随意将自己的UUID泄露给其他人`);
-            });
+4. 请勿随意将自己的信息泄露给其他人`);
 
-            document.getElementById("copy").addEventListener("click", async () => {
-                try {
-                    await navigator.clipboard.writeText(uid);
-                    alert(`UUID\n已复制到剪贴板\n${uid}`);
-                } catch { alert(`UUID\n未复制到剪贴板\n${uid}`); }
-            });
-        })();
+        element("copy-button").onclick = () => {
+            const uid = getUid();
+            const pwd = getPwd();
+            
+            navigator.clipboard.writeText(uid + "\n" + pwd);
+            alert(`用户信息
+UID: ${uid}
+密码: ${pwd}
+已复制到剪贴板
+可用于配合API离线修改设置`)};
     </script>
 </body>
 
