@@ -90,13 +90,6 @@ jobs:
           SQLCIPHER_KEY: ${{ secrets.SQLCIPHER_KEY }}
         run: python src/table.py
 
-      - name: 上传差异
-        uses: actions/upload-artifact@v7
-        with:
-          name: diff
-          path: diff/table/
-          retention-days: 14
-
       - name: 上传产物
         uses: actions/upload-artifact@v7
         with:
