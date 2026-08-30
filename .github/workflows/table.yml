@@ -136,10 +136,65 @@ jobs:
           name: ${{ needs.build.outputs.version }}
           path: output/${{ steps.calc_version.outputs.version }}/
 
-      - name: 配置 Rclone
-        uses: AnimMouse/setup-rclone@v1
-        with:
-          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+      - name: 安装软件包
+        run: |
+          curl -fsSL https://github.com/OpenListTeam/OpenList-APT/releases/latest/download/install-apt.sh | sudo bash
+          sudo apt-get install -y openlist
+          sudo -v ; curl https://rclone.org/install.sh | sudo bash
+
+      - name: 配置存储
+        run: |
+          sudo openlist server &
+          sudo openlist admin set "password"
+
+          TOKEN=$(curl -fsS "http://127.0.0.1:5244/api/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"username":"admin","password":"password"}' |
+            jq -er '.data.token')
+
+          curl -fsS \
+            "http://127.0.0.1:5244/api/admin/user/get?id=1" \
+            -H "Authorization: $TOKEN" |
+          jq -c '.data | .permission = 29695' |
+          curl -fsS \
+            "http://127.0.0.1:5244/api/admin/user/update" \
+            -H "Authorization: $TOKEN" \
+            -H "Content-Type: application/json" \
+            --data-binary @-
+
+          TOKEN=$(curl -fsS "http://127.0.0.1:5244/api/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"username":"admin","password":"password"}' |
+            jq -er '.data.token')
+
+          response=$(curl -fsS "http://127.0.0.1:5244/api/admin/storage/create" \
+            -H "Authorization: $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -nc '
+              {
+                mount_path: "/bluearchive-cafe",
+                driver: "139Yun",
+                addition: ({
+                    authorization: "${{ secrets.AUTHORIZATION }}",
+                    username: "${{ secrets.USERNAME }}",
+                    password: "${{ secrets.PASSWORD }}",
+                    mail_cookies: "${{ secrets.MAIL_COOKIES }}",
+                    root_folder_id: "${{ secrets.ROOT_FOLDER_ID }}",
+                    type: "personal_new"
+                  } | tostring)
+              }')")
+
+          echo "$response" | jq -e '.code == 200' >/dev/null || {
+            echo "$response"
+            exit 1
+          }
+
+          rclone config create bluearchive-cafe webdav \
+            url "http://127.0.0.1:5244/dav/bluearchive-cafe" \
+            vendor other \
+            user admin \
+            pass "$(rclone obscure "password")" \
+            --non-interactive
 
       - name: 部署资源
         run: rclone sync output/${{ steps.calc_version.outputs.version }}/ bluearchive-cafe:/clientpatch/${{ steps.calc_version.outputs.version }}/
