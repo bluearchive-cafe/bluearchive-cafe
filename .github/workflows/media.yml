@@ -200,10 +200,10 @@ jobs:
             --non-interactive
 
       - name: 同步资源
-        run: rclone sync output/common/ bluearchive-cafe:/clientpatch/common/
+        run: rclone sync output/common/ bluearchive-cafe:/clientpatch/common/ --transfers 1
 
       - name: 同步目录
-        run: rclone sync output/${{ needs.build.outputs.version }}/ bluearchive-cafe:/clientpatch/${{ needs.build.outputs.version }}/ --include "**/MediaResources*/**"
+        run: rclone sync output/${{ needs.build.outputs.version }}/ bluearchive-cafe:/clientpatch/${{ needs.build.outputs.version }}/ --include "**/MediaResources*/**" --transfers 1
 
     outputs:
       version: ${{ needs.build.outputs.version }}

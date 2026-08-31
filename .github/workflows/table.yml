@@ -196,14 +196,7 @@ jobs:
             --non-interactive
 
       - name: 部署资源
-        timeout-minutes: 3
-        run: rclone sync output/${{ steps.calc_version.outputs.version }}/ bluearchive-cafe:/clientpatch/${{ steps.calc_version.outputs.version }}/ --transfers 1 -vv
-
-      - name: 查看 OpenList 日志
-        if: failure()
-        run: |
-          echo "===== OpenList Log ====="
-          sudo cat /var/lib/openlist/data/log/log.log
+        run: rclone sync output/${{ steps.calc_version.outputs.version }}/ bluearchive-cafe:/clientpatch/${{ steps.calc_version.outputs.version }}/ --transfers 1
 
       - name: 打包产物
         run: |

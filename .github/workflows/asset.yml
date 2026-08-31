@@ -170,7 +170,7 @@ jobs:
             --non-interactive
 
       - name: 同步资源
-        run: rclone sync output/${{ needs.build.outputs.version }}/ bluearchive-cafe:/clientpatch-test/${{ needs.build.outputs.version }}/ --include "**/*_PatchPack/**" -vv
+        run: rclone sync output/${{ needs.build.outputs.version }}/ bluearchive-cafe:/clientpatch-test/${{ needs.build.outputs.version }}/ --include "**/*_PatchPack/**" --transfers 1 -vv
 
     outputs:
       version: ${{ needs.build.outputs.version }}
