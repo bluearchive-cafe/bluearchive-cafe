@@ -1,0 +1,224 @@
+name: 同步 MediaResources
+run-name: 构建并部署 MediaResources 资源
+
+on:
+  workflow_dispatch:
+    inputs:
+      check:
+        description: "检查状态"
+        type: boolean
+        default: false
+
+      deploy:
+        description: "部署产物"
+        type: boolean
+        default: true
+
+      update:
+        description: "更新状态"
+        type: boolean
+        default: true
+
+jobs:
+  check:
+    name: 检查状态
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+
+    steps:
+      - name: 检查状态
+        id: check_status
+        run: |
+          if [[ "${{ github.event.inputs.check }}" == "true" ]]; then
+            url="https://api.bluearchive.cafe/status/check?resource=voice"
+            sync=$(curl -fsSL --max-time 10 "$url")
+            if [[ "$sync" == "true" ]]; then
+              echo "已是最新版本"
+            fi
+          else
+            sync="false"
+            echo "跳过检查状态"
+          fi
+          echo "sync=$sync" >> "$GITHUB_OUTPUT"
+
+    outputs:
+      sync: ${{ steps.check_status.outputs.sync }}
+
+  build:
+    name: 构建产物
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: check
+    if: needs.check.outputs.sync == 'false'
+
+    steps:
+      - name: 获取版本
+        id: get_version
+        run: |
+          url="https://api.bluearchive.cafe/status/get?resource=voice&channel=official"
+          version=$(curl -fsSL --max-time 10 "$url")
+          echo "正在获取版本: $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: 检出仓库
+        uses: actions/checkout@v6
+        with:
+          repository: bluearchive-cafe/clientpatch
+          token: ${{ secrets.PAT }}
+          sparse-checkout: |
+            /*
+            !/table/
+            !/asset/
+          sparse-checkout-cone-mode: false
+
+      - name: 配置 Python 环境
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: 3.12
+          activate-environment: true
+
+      - name: 安装 Python 依赖
+        run: uv pip install -r requirements.txt
+
+      - name: 运行脚本
+        env:
+          RESOURCE_VERSION: ${{ steps.get_version.outputs.version }}
+        run: python src/media.py
+
+      - name: 上传产物
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.get_version.outputs.version }}
+          path: output/${{ steps.get_version.outputs.version }}/
+          retention-days: 1
+
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+
+  deploy:
+    name: 部署产物
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    if: github.event.inputs.deploy != 'false'
+
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v6
+        with:
+          repository: bluearchive-cafe/clientpatch
+          token: ${{ secrets.PAT }}
+          sparse-checkout: media/
+
+      - name: 分类资源
+        run: |
+          mkdir -p output/common/text=na/voice=cn/media=na/MediaResources
+          mkdir -p output/common/text=na/voice=na/media=cn/MediaResources
+
+          find media -type f \( -iname '*.ogg' -o -iname '*.zip' \) -print0 |
+            while IFS= read -r -d '' file; do
+              relative="${file#media/}"
+              target="output/common/text=na/voice=cn/media=na/MediaResources/$relative"
+
+              mkdir -p "$(dirname "$target")"
+              cp -f "$file" "$target"
+            done
+
+          find media -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.mp4' \) -print0 |
+            while IFS= read -r -d '' file; do
+              relative="${file#media/}"
+              target="output/common/text=na/voice=na/media=cn/MediaResources/$relative"
+
+              mkdir -p "$(dirname "$target")"
+              cp -f "$file" "$target"
+            done
+
+      - name: 下载产物
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ needs.build.outputs.version }}
+          path: output/${{ needs.build.outputs.version }}/
+
+      - name: 安装软件包
+        run: |
+          curl -fsSL https://github.com/OpenListTeam/OpenList-APT/releases/latest/download/install-apt.sh | sudo bash
+          sudo apt-get install -y openlist
+          sudo -v ; curl https://rclone.org/install.sh | sudo bash
+
+      - name: 配置存储
+        run: |
+          sudo openlist admin set "password"
+
+          TOKEN=$(curl -fsS "http://127.0.0.1:5244/api/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"username":"admin","password":"password"}' |
+            jq -er '.data.token')
+
+          curl -fsS \
+            "http://127.0.0.1:5244/api/admin/user/get?id=1" \
+            -H "Authorization: $TOKEN" |
+          jq -c '.data | .permission = 29695' |
+          curl -fsS \
+            "http://127.0.0.1:5244/api/admin/user/update" \
+            -H "Authorization: $TOKEN" \
+            -H "Content-Type: application/json" \
+            --data-binary @-
+
+          TOKEN=$(curl -fsS "http://127.0.0.1:5244/api/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"username":"admin","password":"password"}' |
+            jq -er '.data.token')
+
+          response=$(curl -fsS "http://127.0.0.1:5244/api/admin/storage/create" \
+            -H "Authorization: $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -nc '
+              {
+                mount_path: "/bluearchive-cafe",
+                driver: "139Yun",
+                cache_expiration: 30,
+                addition: ({
+                    authorization: "${{ secrets.AUTHORIZATION }}",
+                    username: "${{ secrets.USERNAME }}",
+                    password: "${{ secrets.PASSWORD }}",
+                    mail_cookies: "${{ secrets.MAIL_COOKIES }}",
+                    root_folder_id: "${{ secrets.ROOT_FOLDER_ID }}",
+                    type: "personal_new"
+                  } | tostring)
+              }')")
+
+          echo "$response" | jq -e '.code == 200' >/dev/null || {
+            echo "$response"
+            exit 1
+          }
+
+          rclone config create bluearchive-cafe webdav \
+            url "http://127.0.0.1:5244/dav/bluearchive-cafe" \
+            vendor other \
+            user admin \
+            pass password \
+            --non-interactive
+
+      - name: 同步资源
+        run: rclone sync output/common/ bluearchive-cafe:/clientpatch/common/
+
+      - name: 同步目录
+        run: rclone sync output/${{ needs.build.outputs.version }}/ bluearchive-cafe:/clientpatch/${{ needs.build.outputs.version }}/ --include "*MediaResources*"
+
+    outputs:
+      version: ${{ needs.build.outputs.version }}
+
+  update:
+    name: 更新状态
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    needs: deploy
+    if: github.event.inputs.update != 'false'
+
+    steps:
+      - name: 更新状态
+        run: |
+          version="${{ needs.deploy.outputs.version }}"
+          echo "正在更新状态: $version"
+          url="https://api.bluearchive.cafe/status/set?resource=voice&channel=localized&version=$version&token=${{ secrets.BLUEARCHIVE_CAFE_TOKEN }}"
+          curl -fsSL --max-time 10 "$url" >/dev/null

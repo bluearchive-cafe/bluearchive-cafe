@@ -28,7 +28,6 @@ jobs:
     steps:
       - name: 检查状态
         id: check_status
-        shell: bash
         run: |
           if [[ "${{ github.event.inputs.check }}" == "true" ]]; then
             url="https://api.bluearchive.cafe/status/check?resource=text"
@@ -144,7 +143,6 @@ jobs:
 
       - name: 配置存储
         run: |
-          sudo openlist server &
           sudo openlist admin set "password"
 
           TOKEN=$(curl -fsS "http://127.0.0.1:5244/api/auth/login" \
@@ -174,6 +172,7 @@ jobs:
               {
                 mount_path: "/bluearchive-cafe",
                 driver: "139Yun",
+                cache_expiration: 30,
                 addition: ({
                     authorization: "${{ secrets.AUTHORIZATION }}",
                     username: "${{ secrets.USERNAME }}",
@@ -193,7 +192,7 @@ jobs:
             url "http://127.0.0.1:5244/dav/bluearchive-cafe" \
             vendor other \
             user admin \
-            pass "$(rclone obscure "password")" \
+            pass password \
             --non-interactive
 
       - name: 部署资源
