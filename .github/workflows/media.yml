@@ -203,7 +203,7 @@ jobs:
         run: rclone sync output/common/ bluearchive-cafe:/clientpatch/common/
 
       - name: 同步目录
-        run: rclone sync output/${{ needs.build.outputs.version }}/ bluearchive-cafe:/clientpatch/${{ needs.build.outputs.version }}/ --include "*MediaResources*"
+        run: rclone sync output/${{ needs.build.outputs.version }}/ bluearchive-cafe:/clientpatch/${{ needs.build.outputs.version }}/ --include "**/MediaResources*/**"
 
     outputs:
       version: ${{ needs.build.outputs.version }}
